@@ -78,7 +78,8 @@ classdef Data < matlab.mixin.Copyable
             % Fill in BCEAs
             obj.bceas = zeros(size(raw_ps_data, 1), 1);
             for i = 1:size(raw_ps_data, 1)
-                bceas(i) = bcea(em_data(i).xdeg(), em_data(i).ydeg(), 3);
+                obj.bceas(i) = bcea(obj.em_data{i}.xdeg(),...
+                                    obj.em_data{i}.ydeg(), 3);
             end
         end
         
