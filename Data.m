@@ -103,7 +103,7 @@ classdef Data < matlab.mixin.Copyable
 
             % Now do em_data
             d.em_data = cell(1, 1);
-            for i = 1:size(indices, 2)
+            for i = 1:size(indices, 1)
                 d.em_data{i, 1} = obj.em_data{indices(i), 1};
             end
         end
