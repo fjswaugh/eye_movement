@@ -22,136 +22,98 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 29-Sep-2016 16:03:47
+% Last Modified by GUIDE v2.5 30-Sep-2016 13:08:46
 
 % Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
-gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @gui_OpeningFcn, ...
-                   'gui_OutputFcn',  @gui_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
-if nargin && ischar(varargin{1})
-    gui_State.gui_Callback = str2func(varargin{1});
-end
+    gui_Singleton = 1;
+    gui_State = struct('gui_Name',       mfilename, ...
+                       'gui_Singleton',  gui_Singleton, ...
+                       'gui_OpeningFcn', @gui_OpeningFcn, ...
+                       'gui_OutputFcn',  @gui_OutputFcn, ...
+                       'gui_LayoutFcn',  [] , ...
+                       'gui_Callback',   []);
+    if nargin && ischar(varargin{1})
+        gui_State.gui_Callback = str2func(varargin{1});
+    end
 
-if nargout
-    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
-else
-    gui_mainfcn(gui_State, varargin{:});
-end
+    if nargout
+        [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+    else
+        gui_mainfcn(gui_State, varargin{:});
+    end
 % End initialization code - DO NOT EDIT
 end
 
 
 % --- Executes just before gui is made visible.
 function gui_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to gui (see VARARGIN)
+    handles.output = hObject;
 
-% Choose default command line output for gui
-handles.output = hObject;
+    handles.em_filename = get(handles.em_filename_edit, 'String');
+    handles.ps_filename = get(handles.ps_filename_edit, 'String');
+    
+    handles.trial_num   = str2num(get(handles.trial_num_edit,   'String'));
+    handles.start_limit = str2num(get(handles.start_limit_edit, 'String'));
+    handles.end_limit   = str2num(get(handles.end_limit_edit,   'String'));
 
-% Update handles structure
-guidata(hObject, handles);
-
-% UIWAIT makes gui wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+    % Update handles structure
+    guidata(hObject, handles);
+    
+    % Grey input boxes for setting limits
+    set(handles.start_limit_edit, 'Enable', 'off');
+    set(handles.end_limit_edit,   'Enable', 'off');
+    
+    % Make everything below invisible so the user can't press anything
+    % before data has been loaded
+    set(handles.button_table,   'Visible', 'off');
+    set(handles.uipanel1,       'Visible', 'off');
+    set(handles.uibuttongroup1, 'Visible', 'off');
+    set(handles.uibuttongroup2, 'Visible', 'off');
 end
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = gui_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Get default command line output from handles structure
-varargout{1} = handles.output;
+function varargout = gui_OutputFcn(hObject, eventdata, handles)
+    varargout{1} = handles.output;
 end
 
 function em_filename_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to em_filename_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-handles.em_filename = get(hObject, 'String');
-guidata(hObject, handles);
-
-% Hints: get(hObject,'String') returns contents of em_filename_edit as text
-%        str2double(get(hObject,'String')) returns contents of em_filename_edit as a double
+    handles.em_filename = get(hObject, 'String');
+    guidata(hObject, handles);
 end
 
-% --- Executes during object creation, after setting all properties.
 function em_filename_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to em_filename_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 end
 
-% --- Executes on button press in browsebutton.
 function button_browse_em_Callback(hObject, eventdata, handles)
-% hObject    handle to browsebutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
     [a, b] = uigetfile('*.*', 'Select eye movement data file');
     handles.em_filename = [b, a];
     set(handles.em_filename_edit, 'String', handles.em_filename);
     guidata(hObject, handles);
 end
 
-
-
 function ps_filename_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to ps_filename_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-handles.ps_filename = get(hObject, 'String');
-guidata(hObject, handles);
-
-% Hints: get(hObject,'String') returns contents of ps_filename_edit as text
-%        str2double(get(hObject,'String')) returns contents of ps_filename_edit as a double
+    handles.ps_filename = get(hObject, 'String');
+    guidata(hObject, handles);
 end
 
-% --- Executes during object creation, after setting all properties.
 function ps_filename_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to ps_filename_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 end
 
-% --- Executes on button press in browsebutton.
 function button_browse_ps_Callback(hObject, eventdata, handles)
-% hObject    handle to browsebutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
     [a, b] = uigetfile('*.*', 'Select psychophysics data file');
     handles.ps_filename = [b, a];
     set(handles.ps_filename_edit, 'String', handles.ps_filename);
     guidata(hObject, handles);
 end
 
-function button_read_data_Callback(hObject, eventdata, handles)
+function button_read_data_Callback(hObject, eventdata, handles)    
     screen_res = [1600, 1200];
     
     % Read data from em file
@@ -187,11 +149,162 @@ function button_read_data_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
     
     % Set data in summary table
-    length = size(handles.desirable_data.trial_nums, 1);
-    summary_data = cell(length, 2);
-    summary_data(:, 1) = num2cell(handles.desirable_data.trial_nums);
-    for i = 1:length
-        summary_data{i, 2} = data_type_str(handles.desirable_data.type(i));
-    end
+    summary_data = cell(handles.desirable_data.size(), 2);
+    summary_data(:, 1) = num2cell(handles.desirable_data.trial_num);
+    summary_data(:, 2) = handles.desirable_data.type_str();
     set(handles.summary_table, 'Data', summary_data);
+    
+    % Make everything below visible now data is loaded
+    set(handles.button_table,   'Visible', 'on');
+    set(handles.uipanel1,       'Visible', 'on');
+    set(handles.uibuttongroup1, 'Visible', 'on');
+    set(handles.uibuttongroup2, 'Visible', 'on');
+end
+
+function button_table_Callback(hObject, eventdata, handles)
+    f = figure;
+    d = handles.all_data;
+    t = uitable(f);
+    td = cell(d.size(), 8);
+    td(:, 1) = num2cell(d.trial_num);
+    td(:, 2) = num2cell(d.logmar);
+    td(:, 3) = num2cell(d.image_num);
+    td(:, 4) = d.type_str();
+    for i = 1:d.size()
+        td{i, 5} = std(d.em_data{i}.xdeg());
+        td{i, 6} = std(d.em_data{i}.ydeg());
+        td{i, 7} = pearson(d.em_data{i}.xdeg(), d.em_data{i}.ydeg());
+    end
+    td(:, 8) = num2cell(d.bcea);
+    
+    t.Data = td;
+    t.ColumnName = {'Trial',    'LogMAR',  'Image num', 'Type',...
+                    'σ(xdeg)',  'σ(ydeg)', 'Pearson',   'BCEA'};
+    t.BackgroundColor = ones(d.size(), 3);
+    t.BackgroundColor(:, 1) = (-204/255) * d.desirable + 1;
+    t.BackgroundColor(:, 2) = (-119/255) * d.desirable + 1;
+    t.ColumnWidth = {80, 120, 90, 150, 120, 120, 120, 120};
+    t.Position = [0, 0, 960, 600];
+end
+
+function trial_num_edit_Callback(hObject, eventdata, handles)
+    handles.trial_num = str2num(get(hObject, 'String'));
+    guidata(hObject, handles);
+end
+
+function trial_num_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+function em_scatter_Callback(hObject, eventdata, handles)
+    plot_scatter(handles.all_data.em_data_for_trial(handles.trial_num));
+end
+
+% --- Executes on button press in button_xy.
+function button_xy_Callback(hObject, eventdata, handles)
+    plot_xy(handles.all_data.em_data_for_trial(handles.trial_num));
+end
+
+% --- Executes on button press in button_hist.
+function button_hist_Callback(hObject, eventdata, handles)
+    plot_hist(handles.all_data.em_data_for_trial(handles.trial_num));
+end
+
+% --- Executes on button press in button_gif.
+function button_gif_Callback(hObject, eventdata, handles)
+    print_gif(handles.all_data.em_data_for_trial(handles.trial_num));
+end
+
+
+% --- Executes on button press in button_bcea_progression.
+function button_bcea_progression_Callback(hObject, eventdata, handles)
+    add_as_series = (get(handles.checkbox_progression_add, 'Value') ==...
+                     get(handles.checkbox_progression_add, 'Max'));
+    plot_bcea_progression(...
+            handles.all_data.em_data_for_trial(handles.trial_num),...
+            add_as_series);
+end
+
+% --- Executes on button press in button_logmar_bcea.
+function button_logmar_bcea_Callback(hObject, eventdata, handles)
+    if get(handles.radio_all_data, 'Value') ==...
+       get(handles.radio_all_data, 'Max')
+        d = handles.all_data;
+    else
+        d = handles.desirable_data;
+    end
+    
+    plot_logmar_bcea(d);
+end
+
+% --- Executes on button press in button_bcea_progression_relevant.
+function button_bcea_progression_relevant_Callback(hObject, eventdata, handles)
+    d = handles.desirable_data;
+    figure;
+    
+    title('BCEA progressions over specified time for relevant trials');
+    xlabel('Time (ms)');
+    ylabel('BCEA');
+        
+    hold on;
+    for i = 1:d.size()
+        progression = real(bcea_progression(d.em_data{i}.xdeg(),...
+                                            d.em_data{i}.ydeg(), 3));
+
+        plot(d.em_data{i}.time(), progression,...
+             'DisplayName', ['Trial ', num2str(d.em_data{i}.trial_num())])
+        legend('-DynamicLegend', 2);
+    end
+    hold off;
+end
+
+function start_limit_edit_Callback(hObject, eventdata, handles)
+    handles.start_limit = str2num(get(hObject, 'String'));
+    guidata(hObject, handles);
+    
+    checkbox_limits_Callback(handles.checkbox_limits, eventdata, handles);
+end
+
+% --- Executes during object creation, after setting all properties.
+function start_limit_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+function end_limit_edit_Callback(hObject, eventdata, handles)
+    handles.end_limit = str2num(get(hObject, 'String'));
+    guidata(hObject, handles);
+    
+    checkbox_limits_Callback(handles.checkbox_limits, eventdata, handles);
+end
+
+% --- Executes during object creation, after setting all properties.
+function end_limit_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+% --- Executes on button press in checkbox_limits.
+function checkbox_limits_Callback(hObject, eventdata, handles)
+    d = handles.all_data;
+    dd = handles.desirable_data;
+    if(get(hObject, 'Value') == get(hObject, 'Max'))
+        % Ungrey input boxes below
+        set(handles.start_limit_edit, 'Enable', 'on');
+        set(handles.end_limit_edit,   'Enable', 'on');
+        
+        d.set_limits(handles.start_limit, handles.end_limit);
+        dd.set_limits(handles.start_limit, handles.end_limit);
+    else
+        % Grey input boxes below
+        set(handles.start_limit_edit, 'Enable', 'off');
+        set(handles.end_limit_edit,   'Enable', 'off');
+        
+        d.remove_limits();
+        dd.remove_limits();
+    end
 end

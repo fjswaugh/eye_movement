@@ -1,11 +1,11 @@
 classdef Data < matlab.mixin.Copyable
     properties
-        trial_nums;
-        logmars;
-        desirable;
+        trial_num;
+        logmar;
         type;
+        desirable;
+        image_num;
         em_data;
-        bceas;
     end
     
     methods
@@ -13,9 +13,9 @@ classdef Data < matlab.mixin.Copyable
         function obj = Data(raw_ps_data, em_data, em_data_size)
             % Takes in em_data_size because size(em_data, 1) doesn't work for
             % some reason
-            obj.trial_nums = 1:size(raw_ps_data, 1);
-            obj.trial_nums = obj.trial_nums';
-            obj.logmars = raw_ps_data(:, 1);
+            obj.trial_num = 1:size(raw_ps_data, 1);
+            obj.trial_num = obj.trial_num';
+            obj.logmar = raw_ps_data(:, 1);
 
             % Flag up reversals first in desirable array
             obj.desirable = zeros(size(raw_ps_data, 1), 1);
@@ -64,42 +64,75 @@ classdef Data < matlab.mixin.Copyable
                 if count >= 2; break; end
             end
 
+            obj.image_num = raw_ps_data(:, 4);
+
             obj.em_data = cell(1, 1);
             % Put the eye movement data into the right order in array, matching
             % up the trial numbers
             for i = 1:em_data_size
                 trial_num = em_data(i).trial_num();
-                indices = find(obj.trial_nums == trial_num);
+                indices = find(obj.trial_num == trial_num);
                 if ~isempty(indices)
                     obj.em_data{indices(end), 1} = em_data(i);
                 end
             end
-
-            % Fill in BCEAs
-            obj.bceas = zeros(size(raw_ps_data, 1), 1);
-            for i = 1:size(raw_ps_data, 1)
-                obj.bceas(i) = bcea(obj.em_data{i}.xdeg(),...
-                                    obj.em_data{i}.ydeg(), 3);
+        end
+        
+        function b = bcea(obj)
+            b = zeros(obj.size(), 1);
+            for i = 1:obj.size();
+                b(i) = bcea(obj.em_data{i}.xdeg(),...
+                            obj.em_data{i}.ydeg(), 3);
             end
         end
         
+        function sz = size(obj)
+            sz = size(obj.trial_num, 1);
+        end
+        
+        function ts = type_str(obj)
+            ts = cell(size(obj.trial_num, 1), 1);
+            for i = 1:size(obj.trial_num, 1)
+                ts{i, 1} = data_type_str(obj.type(i));
+            end
+        end
+
         function lm = logmar_of_trial_num(obj, num)
-            indices = find(obj.trial_nums == num);
+            indices = find(obj.trial_num == num);
             if isempty(indices)
                 error('Trial number not found');
             end
-            lm = obj.logmars(indices(end));
+            lm = obj.logmar(indices(end));
+        end
+
+        function d = em_data_for_trial(obj, num)
+            indices = find(obj.trial_num == num);
+            if isempty(indices)
+                error('Trial number not found');
+            end
+            d = obj.em_data{indices(end)};
+        end
+        
+        function set_limits(obj, a, b)
+            for i = 1:obj.size()
+                obj.em_data{i}.set_limits(a, b);
+            end
+        end
+        
+        function remove_limits(obj)
+            for i = 1:obj.size()
+                obj.em_data{i}.remove_limits();
+            end
         end
 
         function d = desirable_data(obj)
             d = obj.copy();
             indices = find(obj.desirable == 1);
 
-            d.trial_nums = obj.trial_nums(indices);
-            d.logmars    = obj.logmars(indices);
-            d.desirable  = obj.desirable(indices);
-            d.type       = obj.type(indices);
-            d.bceas      = obj.bceas(indices);
+            d.trial_num = obj.trial_num(indices);
+            d.logmar    = obj.logmar(indices);
+            d.desirable = obj.desirable(indices);
+            d.type      = obj.type(indices);
 
             % Now do em_data
             d.em_data = cell(1, 1);

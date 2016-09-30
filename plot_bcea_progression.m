@@ -1,4 +1,4 @@
-function [] = print_bcea_progression(data, add_as_series)
+function [] = plot_bcea_progression(em_data, add_as_series)
     persistent num;
     if not(add_as_series) || isempty(num) || not(ishandle(num))
         num = figure();
@@ -6,15 +6,15 @@ function [] = print_bcea_progression(data, add_as_series)
     
     figure(num);
     
-    progression = real(bcea_progression(data.xdeg(), data.ydeg(), 3));
+    progression = real(bcea_progression(em_data.xdeg(), em_data.ydeg(), 3));
 
     if add_as_series; hold on; end
-    plot(data.time(), progression,...
-         'DisplayName', ['Trial ', num2str(data.trial_num())])
+    plot(em_data.time(), progression,...
+         'DisplayName', ['Trial ', num2str(em_data.trial_num())])
     legend('-DynamicLegend', 2);
     if add_as_series; hold off; end
     
     title('BCEA progressions over specified time for different trials');
     xlabel('Time (ms)');
-    ylabel('BCEA (whatever units BCEA is)');
+    ylabel('BCEA');
 end
