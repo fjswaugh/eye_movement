@@ -65,10 +65,11 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
     
     % Make everything below invisible so the user can't press anything
     % before data has been loaded
-    set(handles.button_table,   'Visible', 'off');
-    set(handles.uipanel1,       'Visible', 'off');
-    set(handles.uibuttongroup1, 'Visible', 'off');
-    set(handles.uibuttongroup2, 'Visible', 'off');
+    set(handles.button_table,                     'Visible', 'off');
+    set(handles.uipanel1,                         'Visible', 'off');
+    set(handles.uibuttongroup1,                   'Visible', 'off');
+    set(handles.uibuttongroup2,                   'Visible', 'off');
+    set(handles.button_bcea_progression_relevant, 'Visible', 'off');
     
     imshow('logo.png');
 end
@@ -159,10 +160,11 @@ function button_read_data_Callback(hObject, eventdata, handles)
     set(handles.summary_table, 'Data', summary_data);
     
     % Make everything below visible now data is loaded
-    set(handles.button_table,   'Visible', 'on');
-    set(handles.uipanel1,       'Visible', 'on');
-    set(handles.uibuttongroup1, 'Visible', 'on');
-    set(handles.uibuttongroup2, 'Visible', 'on');
+    set(handles.button_table,                     'Visible', 'on');
+    set(handles.uipanel1,                         'Visible', 'on');
+    set(handles.uibuttongroup1,                   'Visible', 'on');
+    set(handles.uibuttongroup2,                   'Visible', 'on');
+    set(handles.button_bcea_progression_relevant, 'Visible', 'on');
 end
 
 function button_table_Callback(hObject, eventdata, handles)
