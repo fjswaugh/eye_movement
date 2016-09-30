@@ -133,6 +133,7 @@ classdef Data < matlab.mixin.Copyable
             d.logmar    = obj.logmar(indices);
             d.desirable = obj.desirable(indices);
             d.type      = obj.type(indices);
+            d.image_num = obj.image_num(indices);
 
             % Now do em_data
             d.em_data = cell(1, 1);
