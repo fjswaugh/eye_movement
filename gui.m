@@ -69,6 +69,8 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
     set(handles.uipanel1,       'Visible', 'off');
     set(handles.uibuttongroup1, 'Visible', 'off');
     set(handles.uibuttongroup2, 'Visible', 'off');
+    
+    imshow('logo.png');
 end
 
 
@@ -90,6 +92,7 @@ end
 
 function button_browse_em_Callback(hObject, eventdata, handles)
     [a, b] = uigetfile('*.*', 'Select eye movement data file');
+    if a == 0; return; end;
     handles.em_filename = [b, a];
     set(handles.em_filename_edit, 'String', handles.em_filename);
     guidata(hObject, handles);
@@ -108,6 +111,7 @@ end
 
 function button_browse_ps_Callback(hObject, eventdata, handles)
     [a, b] = uigetfile('*.*', 'Select psychophysics data file');
+    if a == 0; return; end;
     handles.ps_filename = [b, a];
     set(handles.ps_filename_edit, 'String', handles.ps_filename);
     guidata(hObject, handles);
