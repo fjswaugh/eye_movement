@@ -1,7 +1,9 @@
-%[a, b] = uigetfile('*.*', 'Select eye movement data file');
-em_filename = '../eye_movement.asc';
-%[a, b] = uigetfile('*.*', 'Select psychophysics data file');
-ps_filename = '../psychophysics.txt';
+[a, b] = uigetfile('*.*', 'Select eye movement data file');
+em_filename = [b, a];
+%em_filename = '../eye_movement.asc';
+[a, b] = uigetfile('*.*', 'Select psychophysics data file');
+ps_filename = [b, a];
+%ps_filename = '../psychophysics.txt';
 
 screen_res = [1600, 1200];
 
