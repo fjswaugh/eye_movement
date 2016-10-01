@@ -26,6 +26,8 @@ function plot_logmar_bcea(data)
         if i == 0; continue; end;
         xx = x(data.type == i);
         yy = y(data.type == i);
+        if isempty(xx); continue; end;
+        
         scatter(ax2, xx, yy, 20, type_color(i), 'filled');
         
         % Now add label for point, because the legend is broken
