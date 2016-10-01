@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 01-Oct-2016 11:28:42
+% Last Modified by GUIDE v2.5 01-Oct-2016 18:18:26
 
 % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -50,6 +50,7 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 
     handles.em_filename = get(handles.em_filename_edit, 'String');
     handles.ps_filename = get(handles.ps_filename_edit, 'String');
+    handles.background_dir = get(handles.background_dir_edit, 'String');
     
     c = textscan(get(handles.trial_num_edit, 'String'), '%d');
     handles.trial_nums  = c{1};
@@ -118,6 +119,27 @@ function button_browse_ps_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
 end
 
+function background_dir_edit_Callback(hObject, eventdata, handles)
+    handles.background_dir = get(hObject, 'String');
+    guidata(hObject, handles);
+end
+
+% --- Executes during object creation, after setting all properties.
+function background_dir_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+% --- Executes on button press in button_browse_background.
+function button_browse_background_Callback(hObject, eventdata, handles)
+    tmp = uigetdir('.', 'Select directory containing background image files');
+    if tmp == 0; return; end;
+    handles.background_dir = tmp;
+    set(handles.background_dir_edit, 'String', handles.background_dir);
+    guidata(hObject, handles);
+end
+
 function button_read_data_Callback(hObject, eventdata, handles)    
     screen_res = [1600, 1200];
     
@@ -153,8 +175,12 @@ function button_read_data_Callback(hObject, eventdata, handles)
     ps_file = fopen(handles.ps_filename, 'r');
     raw_ps_data = get_ps_data(ps_file);
     
+    % Get meta information about the experiment
+    ps_file = fopen(handles.ps_filename, 'r');
+    meta = get_meta(ps_file);
+    
     % Save everything in data object
-    handles.all_data = Data(raw_ps_data, em_data, count);
+    handles.all_data = Data(raw_ps_data, em_data, count, meta);
     
     % Save selected data as well (4 reverses and 2 controls)
     handles.desirable_data = handles.all_data.desirable_data();
@@ -341,4 +367,28 @@ function checkbox_relevant_trials_Callback(hObject, eventdata, handles)
         handles.trial_nums = read_from_trial_num_edit(handles);
     end
     guidata(hObject, handles);
+end
+
+% Generate scatter with relevant background
+function button_background_Callback(hObject, eventdata, handles)
+    for i = 1:size(handles.trial_nums, 1)
+        trial_num = handles.trial_nums(i);
+        
+        filename = bmp_filename(handles.all_data,...
+                                trial_num,...
+                                handles.background_dir);
+        background = imread(filename);
+        
+        figure;
+        
+        em_data = handles.all_data.em_data_for_trial(trial_num);
+        x = em_data.xpix;
+        y = em_data.ypix;
+
+        imagesc([1 1600], [1 1200], flipud(background));
+        
+        hold on;
+        plot(x, y, 'x');
+        set(gca, 'ydir', 'normal');
+    end
 end

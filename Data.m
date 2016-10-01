@@ -6,11 +6,14 @@ classdef Data < matlab.mixin.Copyable
         desirable;
         image_char;
         em_data;
+        meta;
     end
     
     methods
         % Constructor
-        function obj = Data(raw_ps_data, em_data, em_data_size)
+        function obj = Data(raw_ps_data, em_data, em_data_size, meta)
+            obj.meta = meta;
+            
             % Takes in em_data_size because size(em_data, 1) doesn't work for
             % some reason
             obj.trial_num = 1:size(raw_ps_data, 1);
@@ -125,6 +128,14 @@ classdef Data < matlab.mixin.Copyable
             end
             lm = obj.logmar(indices(end));
         end
+        
+        function ic = image_char_of_trial_num(obj, num)
+            indices = find(obj.trial_num == num);
+            if isempty(indices)
+                error('Trial number not found');
+            end
+            ic = obj.image_char(indices(end)); 
+        end
 
         function d = em_data_for_trial(obj, num)
             indices = find(obj.trial_num == num);
@@ -150,6 +161,8 @@ classdef Data < matlab.mixin.Copyable
             d = obj.copy();
             indices = find(obj.desirable == 1);
 
+            d.meta = obj.meta;
+            
             d.trial_num = obj.trial_num(indices);
             d.logmar    = obj.logmar(indices);
             d.desirable = obj.desirable(indices);
