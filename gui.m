@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 30-Sep-2016 13:08:46
+% Last Modified by GUIDE v2.5 01-Oct-2016 01:55:23
 
 % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -51,7 +51,9 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.em_filename = get(handles.em_filename_edit, 'String');
     handles.ps_filename = get(handles.ps_filename_edit, 'String');
     
-    handles.trial_num   = str2num(get(handles.trial_num_edit,   'String'));
+    c = textscan(get(handles.trial_num_edit, 'String'), '%d');
+    handles.trial_nums  = c{1};
+    
     handles.start_limit = str2num(get(handles.start_limit_edit, 'String'));
     handles.end_limit   = str2num(get(handles.end_limit_edit,   'String'));
 
@@ -68,7 +70,6 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
     set(handles.uipanel1,                         'Visible', 'off');
     set(handles.uibuttongroup1,                   'Visible', 'off');
     set(handles.uibuttongroup2,                   'Visible', 'off');
-    set(handles.button_bcea_progression_relevant, 'Visible', 'off');
     
     imshow('logo.png');
 end
@@ -124,20 +125,28 @@ function button_read_data_Callback(hObject, eventdata, handles)
     em_file = fopen(handles.em_filename, 'r');
     line = fgetl(em_file);
     count = 0;
+    offset = [0, 0];
     while ischar(line)
-        if str_contains(line, 'TRIALID')
+        if str_contains(line, 'POINT 0')
+            tmp = textscan(line, '%s');
+            tmp = textscan(tmp{1}{13}, '%f,%f');
+            offset = [tmp{1}, tmp{2}];
+        elseif str_contains(line, 'TRIALID')
             tmp = textscan(line, '%s');
             trial_num_str = tmp{1}{4};
             trial_num = str2num(trial_num_str);
 
             raw_data = get_next_em_data(em_file);
-            data = EyeMovementData(trial_num, raw_data, screen_res);
+            data = EyeMovementData(trial_num, raw_data, screen_res, offset);
 
             count = count + 1;
             em_data(count) = data;
         end
         
         line = fgetl(em_file);
+    end
+    if offset == [0, 0]
+        warning('No offset found');
     end
 
     % Read data from ps file
@@ -163,7 +172,6 @@ function button_read_data_Callback(hObject, eventdata, handles)
     set(handles.uipanel1,                         'Visible', 'on');
     set(handles.uibuttongroup1,                   'Visible', 'on');
     set(handles.uibuttongroup2,                   'Visible', 'on');
-    set(handles.button_bcea_progression_relevant, 'Visible', 'on');
 end
 
 function button_table_Callback(hObject, eventdata, handles)
@@ -193,8 +201,13 @@ function button_table_Callback(hObject, eventdata, handles)
 end
 
 function trial_num_edit_Callback(hObject, eventdata, handles)
-    handles.trial_num = str2num(get(hObject, 'String'));
+    handles.trial_nums = read_from_trial_num_edit(handles);
     guidata(hObject, handles);
+end
+
+function trial_nums = read_from_trial_num_edit(handles)
+    c = textscan(get(handles.trial_num_edit, 'String'), '%d');
+    trial_nums  = c{1};
 end
 
 function trial_num_edit_CreateFcn(hObject, eventdata, handles)
@@ -204,32 +217,46 @@ function trial_num_edit_CreateFcn(hObject, eventdata, handles)
 end
 
 function em_scatter_Callback(hObject, eventdata, handles)
-    plot_scatter(handles.all_data.em_data_for_trial(handles.trial_num));
+    for i = 1:size(handles.trial_nums, 1)
+        trial_num = handles.trial_nums(i);
+        plot_scatter(handles.all_data.em_data_for_trial(trial_num));
+    end
 end
 
 % --- Executes on button press in button_xy.
 function button_xy_Callback(hObject, eventdata, handles)
-    plot_xy(handles.all_data.em_data_for_trial(handles.trial_num));
+    for i = 1:size(handles.trial_nums, 1)
+        trial_num = handles.trial_nums(i);
+        plot_xy(handles.all_data.em_data_for_trial(trial_num));
+    end
 end
 
 % --- Executes on button press in button_hist.
 function button_hist_Callback(hObject, eventdata, handles)
-    plot_hist(handles.all_data.em_data_for_trial(handles.trial_num));
+    for i = 1:size(handles.trial_nums, 1)
+        trial_num = handles.trial_nums(i);
+        plot_hist(handles.all_data.em_data_for_trial(trial_num));
+    end
 end
 
 % --- Executes on button press in button_gif.
 function button_gif_Callback(hObject, eventdata, handles)
-    print_gif(handles.all_data.em_data_for_trial(handles.trial_num));
+    for i = 1:size(handles.trial_nums, 1)
+        trial_num = handles.trial_nums(i);
+        print_gif(handles.all_data.em_data_for_trial(trial_num));
+    end
 end
-
 
 % --- Executes on button press in button_bcea_progression.
 function button_bcea_progression_Callback(hObject, eventdata, handles)
     add_as_series = (get(handles.checkbox_progression_add, 'Value') ==...
                      get(handles.checkbox_progression_add, 'Max'));
-    plot_bcea_progression(...
-            handles.all_data.em_data_for_trial(handles.trial_num),...
-            add_as_series);
+    for i = 1:size(handles.trial_nums, 1)
+        trial_num = handles.trial_nums(i);
+        plot_bcea_progression(...
+                handles.all_data.em_data_for_trial(trial_num),...
+                add_as_series);
+    end
 end
 
 % --- Executes on button press in button_logmar_bcea.
@@ -312,4 +339,18 @@ function checkbox_limits_Callback(hObject, eventdata, handles)
         d.remove_limits();
         dd.remove_limits();
     end
+end
+
+% --- Executes on button press in checkbox_relevant_trials.
+function checkbox_relevant_trials_Callback(hObject, eventdata, handles)
+    if(get(hObject, 'Value') == get(hObject, 'Max'))
+        % Grey input box below
+        set(handles.trial_num_edit, 'Enable', 'off');
+        handles.trial_nums = handles.desirable_data.trial_num;
+    else
+        % Ungrey input box below
+        set(handles.trial_num_edit, 'Enable', 'on');
+        handles.trial_nums = read_from_trial_num_edit(handles);
+    end
+    guidata(hObject, handles);
 end

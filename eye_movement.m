@@ -1,9 +1,9 @@
-[a, b] = uigetfile('*.*', 'Select eye movement data file');
-em_filename = [b, a];
-%em_filename = '../eye_movement.asc';
-[a, b] = uigetfile('*.*', 'Select psychophysics data file');
-ps_filename = [b, a];
-%ps_filename = '../psychophysics.txt';
+% [a, b] = uigetfile('*.*', 'Select eye movement data file');
+% em_filename = [b, a];
+em_filename = '../eye_movement.asc';
+% [a, b] = uigetfile('*.*', 'Select psychophysics data file');
+% ps_filename = [b, a];
+ps_filename = '../psychophysics.txt';
 
 screen_res = [1600, 1200];
 
@@ -11,14 +11,19 @@ screen_res = [1600, 1200];
 em_file = fopen(em_filename, 'r');
 line = fgetl(em_file);
 count = 0;
+offset = [0, 0];
 while ischar(line)
-    if str_contains(line, 'TRIALID')
+    if str_contains(line, 'POINT 0')
+        tmp = textscan(line, '%s');
+        tmp = textscan(tmp{1}{13}, '%f,%f');
+        offset = [tmp{1}, tmp{2}];
+    elseif str_contains(line, 'TRIALID')
         tmp = textscan(line, '%s');
         trial_num_str = tmp{1}{4};
         trial_num = str2num(trial_num_str);
 
         raw_data = get_next_em_data(em_file);
-        data = EyeMovementData(trial_num, raw_data, screen_res);
+        data = EyeMovementData(trial_num, raw_data, screen_res, offset);
 
         count = count + 1;
         em_data(count) = data;

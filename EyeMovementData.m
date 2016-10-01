@@ -29,7 +29,8 @@ classdef EyeMovementData < matlab.mixin.Copyable
     
     methods
         % Constructor
-        function obj = EyeMovementData(trial_num, raw_data, screen_res)
+        function obj = EyeMovementData(trial_num, raw_data,...
+                                       screen_res, offset)
             obj.size_ = size(raw_data, 1);
 
             obj.s_ = 1;
@@ -39,8 +40,8 @@ classdef EyeMovementData < matlab.mixin.Copyable
             
             obj.time_ = (1:obj.size_)';
             
-            obj.xpix_ = raw_data(:,2);
-            obj.ypix_ = raw_data(:,3);
+            obj.xpix_ = raw_data(:,2) - offset(1);
+            obj.ypix_ = raw_data(:,3) - offset(2);
             
             xres = raw_data(:,5);
             yres = raw_data(:,6);
