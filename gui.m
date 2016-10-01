@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 01-Oct-2016 01:55:23
+% Last Modified by GUIDE v2.5 01-Oct-2016 11:28:42
 
 % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -216,10 +216,13 @@ function trial_num_edit_CreateFcn(hObject, eventdata, handles)
     end
 end
 
-function em_scatter_Callback(hObject, eventdata, handles)
+function button_scatter_Callback(hObject, eventdata, handles)
+    add_as_series = (get(handles.checkbox_scatter_add, 'Value') ==...
+                     get(handles.checkbox_scatter_add, 'Max'));
     for i = 1:size(handles.trial_nums, 1)
         trial_num = handles.trial_nums(i);
-        plot_scatter(handles.all_data.em_data_for_trial(trial_num));
+        plot_scatter(handles.all_data.em_data_for_trial(trial_num),...
+                     add_as_series);
     end
 end
 
