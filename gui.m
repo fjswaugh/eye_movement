@@ -271,27 +271,6 @@ function button_logmar_bcea_Callback(hObject, eventdata, handles)
     plot_logmar_bcea(d);
 end
 
-% --- Executes on button press in button_bcea_progression_relevant.
-function button_bcea_progression_relevant_Callback(hObject, eventdata, handles)
-    d = handles.desirable_data;
-    figure;
-    
-    title('BCEA progressions over specified time for relevant trials');
-    xlabel('Time (ms)');
-    ylabel('BCEA');
-        
-    hold on;
-    for i = 1:d.size()
-        progression = real(bcea_progression(d.em_data{i}.xdeg(),...
-                                            d.em_data{i}.ydeg(), 3));
-
-        plot(d.em_data{i}.time(), progression,...
-             'DisplayName', ['Trial ', num2str(d.em_data{i}.trial_num())])
-        legend('-DynamicLegend', 2);
-    end
-    hold off;
-end
-
 function start_limit_edit_Callback(hObject, eventdata, handles)
     handles.start_limit = str2num(get(hObject, 'String'));
     guidata(hObject, handles);
