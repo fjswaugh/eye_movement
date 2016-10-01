@@ -4,7 +4,7 @@ classdef Data < matlab.mixin.Copyable
         logmar;
         type;
         desirable;
-        image_num;
+        image_char;
         em_data;
     end
     
@@ -64,8 +64,22 @@ classdef Data < matlab.mixin.Copyable
                 if count >= 2; break; end
             end
 
-            obj.image_num = raw_ps_data(:, 4);
-
+            image_num = raw_ps_data(:, 4);
+            obj.image_char = char(zeros(obj.size(), 1));
+            for i = 1:obj.size()
+                if image_num(i) == 1
+                    obj.image_char(i, 1) = 'H';
+                elseif image_num(i) == 2
+                    obj.image_char(i, 1) = 'O';
+                elseif image_num(i) == 3
+                    obj.image_char(i, 1) = 'T';
+                elseif image_num(i) == 4
+                    obj.image_char(i, 1) = 'V';
+                else
+                    error('Bad image num');
+                end
+            end
+            
             obj.em_data = cell(1, 1);
             % Put the eye movement data into the right order in array, matching
             % up the trial numbers
@@ -133,7 +147,7 @@ classdef Data < matlab.mixin.Copyable
             d.logmar    = obj.logmar(indices);
             d.desirable = obj.desirable(indices);
             d.type      = obj.type(indices);
-            d.image_num = obj.image_num(indices);
+            d.image_char = obj.image_char(indices);
 
             % Now do em_data
             d.em_data = cell(1, 1);

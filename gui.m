@@ -44,7 +44,6 @@ function varargout = gui(varargin)
 % End initialization code - DO NOT EDIT
 end
 
-
 % --- Executes just before gui is made visible.
 function gui_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.output = hObject;
@@ -174,7 +173,7 @@ function button_table_Callback(hObject, eventdata, handles)
     td = cell(d.size(), 8);
     td(:, 1) = num2cell(d.trial_num);
     td(:, 2) = num2cell(d.logmar);
-    td(:, 3) = num2cell(d.image_num);
+    td(:, 3) = cellstr(d.image_char);
     td(:, 4) = d.type_str();
     for i = 1:d.size()
         td{i, 5} = std(d.em_data{i}.xdeg());
@@ -184,8 +183,8 @@ function button_table_Callback(hObject, eventdata, handles)
     td(:, 8) = num2cell(d.bcea);
     
     t.Data = td;
-    t.ColumnName = {'Trial',    'LogMAR',  'Image num', 'Type',...
-                    'σ(xdeg)',  'σ(ydeg)', 'Pearson',   'BCEA'};
+    t.ColumnName = {'Trial',    'LogMAR',  'Image char', 'Type',...
+                    'σ(xdeg)',  'σ(ydeg)', 'Pearson',    'BCEA'};
     t.BackgroundColor = ones(d.size(), 3);
     t.BackgroundColor(:, 1) = (-204/255) * d.desirable + 1;
     t.BackgroundColor(:, 2) = (-119/255) * d.desirable + 1;
