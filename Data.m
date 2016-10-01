@@ -107,7 +107,14 @@ classdef Data < matlab.mixin.Copyable
         function ts = type_str(obj)
             ts = cell(size(obj.trial_num, 1), 1);
             for i = 1:size(obj.trial_num, 1)
-                ts{i, 1} = data_type_str(obj.type(i));
+                ts{i, 1} = type_str(obj.type(i));
+            end
+        end
+        
+        function tc = type_color(obj)
+            tc = zeros(obj.size(), 3);
+            for i = 1:obj.size()
+                tc(i, :) = type_color(obj.type(i));
             end
         end
 
