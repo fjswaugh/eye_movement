@@ -1,4 +1,5 @@
 function plot_logmar_bcea(data)
+    figure;
     ax1 = axes('Position',[.75 0 .25 1],'Visible','off');
     ax2 = axes('Position',[.1 .1 .6 .8]);
 
