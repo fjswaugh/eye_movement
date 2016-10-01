@@ -14,7 +14,7 @@ function [] = plot_bcea_progression(em_data, add_as_series)
     legend('-DynamicLegend', 2);
     if add_as_series; hold off; end
     
-    title('BCEA progressions over specified time for different trials');
+    title('BCEA progression over specified time');
     xlabel('Time (ms)');
     ylabel('BCEA');
 end

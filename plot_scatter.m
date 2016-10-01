@@ -14,6 +14,5 @@ function plot_scatter(em_data, add_as_series)
 
     xlabel('x (degrees)');
     ylabel('y (degrees)');
-    str = sprintf('Positions of eye fixation (trial %d)', em_data.trial_num());
-    title(str);
+    title('Positions of eye fixation');
 end
