@@ -161,6 +161,12 @@ function button_read_data_Callback(hObject, eventdata, handles)
     
     guidata(hObject, handles);
     
+    % Make sure to apply any limits that have been selected
+    checkbox_limits_Callback(handles.checkbox_limits, eventdata, handles);
+    % List of relevant trials will now be different
+    checkbox_relevant_trials_Callback(handles.checkbox_relevant_trials,...
+                                      eventdata, handles);
+    
     % Set data in summary table
     summary_data = cell(handles.desirable_data.size(), 2);
     summary_data(:, 1) = num2cell(handles.desirable_data.trial_num);
@@ -168,10 +174,10 @@ function button_read_data_Callback(hObject, eventdata, handles)
     set(handles.summary_table, 'Data', summary_data);
     
     % Make everything below visible now data is loaded
-    set(handles.button_table,                     'Visible', 'on');
-    set(handles.uipanel1,                         'Visible', 'on');
-    set(handles.uibuttongroup1,                   'Visible', 'on');
-    set(handles.uibuttongroup2,                   'Visible', 'on');
+    set(handles.button_table,   'Visible', 'on');
+    set(handles.uipanel1,       'Visible', 'on');
+    set(handles.uibuttongroup1, 'Visible', 'on');
+    set(handles.uibuttongroup2, 'Visible', 'on');
 end
 
 function button_table_Callback(hObject, eventdata, handles)
