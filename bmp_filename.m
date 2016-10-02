@@ -16,10 +16,11 @@ function filename = bmp_filename(data, trial_num, dir_name)
                 letter,     '*',...
                 meta.color, '*',...
                 lum_str,    '*']);
-            length(list)
 
-    if length(list) ~= 1
-        error('Cannot find image file');
+    if isempty(list)
+        filename = [dir_name, '/not_found.BMP'];
+    elseif length(list) ~= 1
+        error('Multiple possible image files found');
     else
         filename = [dir_name, '/', list.name];
     end
