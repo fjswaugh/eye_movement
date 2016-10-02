@@ -36,8 +36,11 @@ end
 ps_file = fopen(ps_filename, 'r');
 raw_ps_data = get_ps_data(ps_file);
 
+ps_file = fopen(ps_filename, 'r');
+meta = get_meta(ps_file);
+
 % Save everything in data object
-all_data = Data(raw_ps_data, em_data, count);
+all_data = Data(raw_ps_data, em_data, count, meta);
 
 % Save selected data as well (4 reverses and 2 controls)
 desirable_data = all_data.desirable_data();
