@@ -11,7 +11,7 @@ classdef Data < matlab.mixin.Copyable
     
     methods
         % Constructor
-        function obj = Data(raw_ps_data, em_data, em_data_size, meta)
+        function obj = Data(raw_ps_data, em_data, meta)
             obj.meta = meta;
             
             % Takes in em_data_size because size(em_data, 1) doesn't work for
@@ -84,13 +84,13 @@ classdef Data < matlab.mixin.Copyable
             end
             
             obj.em_data = cell(1, 1);
-            % Put the eye movement data into the right order in array, matching
-            % up the trial numbers
-            for i = 1:em_data_size
-                trial_num = em_data(i).trial_num();
+            % Put the eye movement data into the right order in array,
+            % matching up the trial numbers
+            for i = 1:length(em_data)
+                trial_num = em_data{i}.trial_num();
                 indices = find(obj.trial_num == trial_num);
                 if ~isempty(indices)
-                    obj.em_data{indices(end), 1} = em_data(i);
+                    obj.em_data{indices(end), 1} = em_data{i};
                 end
             end
         end
