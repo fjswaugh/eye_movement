@@ -323,7 +323,17 @@ end
 function button_gif_Callback(hObject, eventdata, handles)
     for i = 1:length(handles.trial_nums)
         trial_num = handles.trial_nums(i);
-        print_gif(handles.all_data.trial(trial_num).em_data);
+        em_data = handles.all_data.trial(trial_num).em_data;
+        
+        [a, b] = uiputfile('*.gif',...
+                           ['Save .gif for trial ',...
+                            num2str(em_data.trial_num()), ' as...']);
+        filename = [b, a];
+        if strcmp(filename, '')
+            continue;
+        end
+    
+        print_gif(em_data, filename);
     end
 end
 

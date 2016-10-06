@@ -1,12 +1,7 @@
-function [] = print_gif(em_data)
+function [] = print_gif(em_data, filename)
     progression = real(bcea_progression(em_data.xdeg(), em_data.ydeg(), 3));
 
     mpf = 25;  % Milliseconds per frame
-    
-    [a, b] = uiputfile('*.gif',...
-                       ['Save .gif for trial ',...
-                         num2str(em_data.trial_num()), ' as...']);
-    filename = [b, a];
     
     num = figure();
     
