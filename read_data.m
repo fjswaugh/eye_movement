@@ -148,3 +148,7 @@ function [meta] = get_meta(file)
         line = fgetl(file);
     end
 end
+
+function [found] = str_contains(string, search_text)
+    found = not(isempty(strfind(string, search_text)));
+end
