@@ -21,7 +21,7 @@ function plot_logmar_bcea(data)
     fit_str = sprintf('Fit: y = %.4f*x + %.4f, R^2 = %.4f', p(1), p(2), rsq);
     plot(x, yfit, 'DisplayName', fit_str);
     l = legend('-DynamicLegend');
-    l.Location =  'southoutside';
+    l.Location = 'southoutside';
     
     % Now plot the points
     scatter(x, y, 20, data.type_color(), 'filled');

@@ -145,30 +145,6 @@ classdef Data < matlab.mixin.Copyable
             d.image_char = obj.image_char(index);
             d.em_data    = obj.em_data{index, 1};
         end
-
-        function lm = logmar_of_trial_num(obj, num)
-            indices = find(obj.trial_num == num);
-            if isempty(indices)
-                error('Trial number not found');
-            end
-            lm = obj.logmar(indices(end));
-        end
-        
-        function ic = image_char_of_trial_num(obj, num)
-            indices = find(obj.trial_num == num);
-            if isempty(indices)
-                error('Trial number not found');
-            end
-            ic = obj.image_char(indices(end)); 
-        end
-
-        function d = em_data_for_trial(obj, num)
-            indices = find(obj.trial_num == num);
-            if isempty(indices)
-                error('Trial number not found');
-            end
-            d = obj.em_data{indices(end)};
-        end
         
         function set_limits(obj, a, b)
             for i = 1:obj.size()
