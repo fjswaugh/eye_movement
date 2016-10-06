@@ -12,6 +12,10 @@ classdef Data < matlab.mixin.Copyable
     methods
         % Constructor
         function obj = Data(raw_ps_data, em_data, meta)
+            if nargin == 0
+                return;
+            end
+            
             obj.meta = meta;
             
             % Takes in em_data_size because size(em_data, 1) doesn't work for
@@ -120,6 +124,23 @@ classdef Data < matlab.mixin.Copyable
                 tc(i, :) = type_color(obj.type(i));
             end
         end
+        
+        function d = trial(obj, num)
+            d = obj.copy();
+            indices = find(obj.trial_num == num);
+            
+            d.trial_num  = obj.trial_num(indices);
+            d.logmar     = obj.logmar(indices);
+            d.desirable  = obj.desirable(indices);
+            d.type       = obj.type(indices);
+            d.image_char = obj.image_char(indices);
+
+            % Now do em_data
+            d.em_data = cell(length(indices), 1);
+            for i = 1:length(indices)
+                d.em_data{i, 1} = obj.em_data{indices(i), 1};
+            end
+        end
 
         function lm = logmar_of_trial_num(obj, num)
             indices = find(obj.trial_num == num);
@@ -160,18 +181,16 @@ classdef Data < matlab.mixin.Copyable
         function d = desirable_data(obj)
             d = obj.copy();
             indices = find(obj.desirable == 1);
-
-            d.meta = obj.meta;
             
-            d.trial_num = obj.trial_num(indices);
-            d.logmar    = obj.logmar(indices);
-            d.desirable = obj.desirable(indices);
-            d.type      = obj.type(indices);
+            d.trial_num  = obj.trial_num(indices);
+            d.logmar     = obj.logmar(indices);
+            d.desirable  = obj.desirable(indices);
+            d.type       = obj.type(indices);
             d.image_char = obj.image_char(indices);
 
             % Now do em_data
-            d.em_data = cell(1, 1);
-            for i = 1:size(indices, 1)
+            d.em_data = cell(length(indices), 1);
+            for i = 1:length(indices)
                 d.em_data{i, 1} = obj.em_data{indices(i), 1};
             end
         end
