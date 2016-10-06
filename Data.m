@@ -126,20 +126,24 @@ classdef Data < matlab.mixin.Copyable
         end
         
         function d = trial(obj, num)
-            d = obj.copy();
-            indices = find(obj.trial_num == num);
-            
-            d.trial_num  = obj.trial_num(indices);
-            d.logmar     = obj.logmar(indices);
-            d.desirable  = obj.desirable(indices);
-            d.type       = obj.type(indices);
-            d.image_char = obj.image_char(indices);
-
-            % Now do em_data
-            d.em_data = cell(length(indices), 1);
-            for i = 1:length(indices)
-                d.em_data{i, 1} = obj.em_data{indices(i), 1};
+            if length(num) ~= 1
+                error('Cannot accept multiple trial numbers');
             end
+            
+            index = find(obj.trial_num == num);
+            if isempty(index)
+                error('Trial number not found');
+            elseif length(index) ~= 1
+                error('Multiple trials of specified number found');
+            end
+            
+            d = obj.copy();
+            d.trial_num  = obj.trial_num(index);
+            d.logmar     = obj.logmar(index);
+            d.desirable  = obj.desirable(index);
+            d.type       = obj.type(index);
+            d.image_char = obj.image_char(index);
+            d.em_data    = obj.em_data{index, 1};
         end
 
         function lm = logmar_of_trial_num(obj, num)
