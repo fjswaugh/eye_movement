@@ -54,17 +54,16 @@ function data = read_data(em_filename, ps_filename, screen_res)
     data = Data(raw_ps_data, em_data, meta);
 end
 
-function [data] = get_next_em_data(file)
+function [raw_data] = get_next_em_data(file)
     % Use a cell array to store data because it grows much faster than a
     % matrix. We will then convert the array to a matrix after it's full.
-    cell_array = {};
+    cell_array = cell(0, 1);
 
     % State variables, all three must be true to collect data.
     eye_open = true;
     fixed = false;
     synctime_found = false;
 
-    index = 0;  % An index so that we know where to add data to cell array.
     line = fgetl(file);
     while not(str_contains(line, 'END'))
         if str_contains(line, 'SYNCTIME')
@@ -80,8 +79,7 @@ function [data] = get_next_em_data(file)
         % All legitimate data lines end in ... (so test this to make sure)
         elseif str_contains(line, '...')
             if synctime_found && fixed && eye_open
-                index = index + 1;
-                cell_array(index) = {cell2mat(textscan(line, '%f', 6))};
+                cell_array{end+1, 1} = cell2mat(textscan(line, '%f', 6))';
             end
         end
 
@@ -89,18 +87,18 @@ function [data] = get_next_em_data(file)
     end
 
     % Finally convert the cell array to a matrix.
-    data = cell2mat(cell_array)';
+    raw_data = cell2mat(cell_array);
 end
 
-function [data] = get_ps_data(file)
+function [raw_data] = get_ps_data(file)
     collect_data = false;
     trial_num = 1;
-    cell_array = {};
+    cell_array = cell(0, 1);
     
     line = fgetl(file);
     while ischar(line)
         if collect_data
-            cell_array(trial_num) = {cell2mat(textscan(line, '%f', 6))};
+            cell_array{end+1, 1} = cell2mat(textscan(line, '%f', 6))';
             trial_num = trial_num + 1;
         elseif str_contains(line, 'Reversals')
             collect_data = true;
@@ -109,8 +107,8 @@ function [data] = get_ps_data(file)
         
         line = fgetl(file);
     end
-    
-    data = cell2mat(cell_array)';
+
+    raw_data = cell2mat(cell_array);
 end
 
 function [meta] = get_meta(file)
