@@ -48,13 +48,12 @@ end
 function gui_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.output = hObject;
 
-    handles.em_filename = get(handles.em_filename_edit, 'String');
-    handles.ps_filename = get(handles.ps_filename_edit, 'String');
+    handles.em_filename    = get(handles.em_filename_edit,    'String');
+    handles.ps_filename    = get(handles.ps_filename_edit,    'String');
     handles.background_dir = get(handles.background_dir_edit, 'String');
     
-    c = textscan(get(handles.trial_num_edit, 'String'), '%d');
-    handles.trial_nums  = c{1};
-    
+    handles.trial_nums = read_from_trial_num_edit(handles);
+
     handles.start_limit = str2num(get(handles.start_limit_edit, 'String'));
     handles.end_limit   = str2num(get(handles.end_limit_edit,   'String'));
 
@@ -75,21 +74,70 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
     imshow('logo.png');
 end
 
-
 % --- Outputs from this function are returned to the command line.
 function varargout = gui_OutputFcn(hObject, eventdata, handles)
     varargout{1} = handles.output;
 end
+
+% ----- Functions for object creation, after setting properties ----- %
+
+function em_filename_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+function ps_filename_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+function background_dir_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+function end_limit_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+function start_limit_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+function trial_num_edit_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+% ----- Callback functions ----- %
 
 function em_filename_edit_Callback(hObject, eventdata, handles)
     handles.em_filename = get(hObject, 'String');
     guidata(hObject, handles);
 end
 
-function em_filename_edit_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
+function ps_filename_edit_Callback(hObject, eventdata, handles)
+    handles.ps_filename = get(hObject, 'String');
+    guidata(hObject, handles);
+end
+
+function background_dir_edit_Callback(hObject, eventdata, handles)
+    handles.background_dir = get(hObject, 'String');
+    guidata(hObject, handles);
 end
 
 function button_browse_em_Callback(hObject, eventdata, handles)
@@ -100,17 +148,6 @@ function button_browse_em_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
 end
 
-function ps_filename_edit_Callback(hObject, eventdata, handles)
-    handles.ps_filename = get(hObject, 'String');
-    guidata(hObject, handles);
-end
-
-function ps_filename_edit_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-end
-
 function button_browse_ps_Callback(hObject, eventdata, handles)
     [a, b] = uigetfile('*.*', 'Select psychophysics data file');
     if a == 0; return; end;
@@ -119,19 +156,6 @@ function button_browse_ps_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
 end
 
-function background_dir_edit_Callback(hObject, eventdata, handles)
-    handles.background_dir = get(hObject, 'String');
-    guidata(hObject, handles);
-end
-
-% --- Executes during object creation, after setting all properties.
-function background_dir_edit_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-end
-
-% --- Executes on button press in button_browse_background.
 function button_browse_background_Callback(hObject, eventdata, handles)
     tmp = uigetdir('.', 'Select directory containing background image files');
     if tmp == 0; return; end;
@@ -196,92 +220,11 @@ function button_table_Callback(hObject, eventdata, handles)
     t.Position = [0, 0, 960, 600];
 end
 
-function trial_num_edit_Callback(hObject, eventdata, handles)
-    handles.trial_nums = read_from_trial_num_edit(handles);
-    guidata(hObject, handles);
-end
-
-function trial_nums = read_from_trial_num_edit(handles)
-    c = textscan(get(handles.trial_num_edit, 'String'), '%d');
-    trial_nums  = c{1};
-end
-
-function trial_num_edit_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-end
-
-function button_scatter_Callback(hObject, eventdata, handles)
-    add_as_series = (get(handles.checkbox_scatter_add, 'Value') ==...
-                     get(handles.checkbox_scatter_add, 'Max'));
-    for i = 1:size(handles.trial_nums, 1)
-        trial_num = handles.trial_nums(i);
-        plot_scatter(handles.all_data.em_data_for_trial(trial_num),...
-                     add_as_series);
-    end
-end
-
-% --- Executes on button press in button_xy.
-function button_xy_Callback(hObject, eventdata, handles)
-    for i = 1:size(handles.trial_nums, 1)
-        trial_num = handles.trial_nums(i);
-        plot_xy(handles.all_data.em_data_for_trial(trial_num));
-    end
-end
-
-% --- Executes on button press in button_hist.
-function button_hist_Callback(hObject, eventdata, handles)
-    for i = 1:size(handles.trial_nums, 1)
-        trial_num = handles.trial_nums(i);
-        plot_hist(handles.all_data.em_data_for_trial(trial_num));
-    end
-end
-
-% --- Executes on button press in button_gif.
-function button_gif_Callback(hObject, eventdata, handles)
-    for i = 1:size(handles.trial_nums, 1)
-        trial_num = handles.trial_nums(i);
-        print_gif(handles.all_data.em_data_for_trial(trial_num));
-    end
-end
-
-% --- Executes on button press in button_bcea_progression.
-function button_bcea_progression_Callback(hObject, eventdata, handles)
-    add_as_series = (get(handles.checkbox_progression_add, 'Value') ==...
-                     get(handles.checkbox_progression_add, 'Max'));
-    for i = 1:size(handles.trial_nums, 1)
-        trial_num = handles.trial_nums(i);
-        plot_bcea_progression(...
-                handles.all_data.em_data_for_trial(trial_num),...
-                add_as_series);
-    end
-end
-
-% --- Executes on button press in button_logmar_bcea.
-function button_logmar_bcea_Callback(hObject, eventdata, handles)
-    if get(handles.radio_all_data, 'Value') ==...
-       get(handles.radio_all_data, 'Max')
-        d = handles.all_data;
-    else
-        d = handles.desirable_data;
-    end
-    
-    plot_logmar_bcea(d);
-end
-
 function start_limit_edit_Callback(hObject, eventdata, handles)
     handles.start_limit = str2num(get(hObject, 'String'));
     guidata(hObject, handles);
     
     checkbox_limits_Callback(handles.checkbox_limits, eventdata, handles);
-end
-
-% --- Executes during object creation, after setting all properties.
-function start_limit_edit_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
 end
 
 function end_limit_edit_Callback(hObject, eventdata, handles)
@@ -291,14 +234,6 @@ function end_limit_edit_Callback(hObject, eventdata, handles)
     checkbox_limits_Callback(handles.checkbox_limits, eventdata, handles);
 end
 
-% --- Executes during object creation, after setting all properties.
-function end_limit_edit_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-end
-
-% --- Executes on button press in checkbox_limits.
 function checkbox_limits_Callback(hObject, eventdata, handles)
     d = handles.all_data;
     dd = handles.desirable_data;
@@ -319,7 +254,11 @@ function checkbox_limits_Callback(hObject, eventdata, handles)
     end
 end
 
-% --- Executes on button press in checkbox_relevant_trials.
+function trial_num_edit_Callback(hObject, eventdata, handles)
+    handles.trial_nums = read_from_trial_num_edit(handles);
+    guidata(hObject, handles);
+end
+
 function checkbox_relevant_trials_Callback(hObject, eventdata, handles)
     if(get(hObject, 'Value') == get(hObject, 'Max'))
         % Grey input box below
@@ -331,6 +270,16 @@ function checkbox_relevant_trials_Callback(hObject, eventdata, handles)
         handles.trial_nums = read_from_trial_num_edit(handles);
     end
     guidata(hObject, handles);
+end
+
+function button_scatter_Callback(hObject, eventdata, handles)
+    add_as_series = (get(handles.checkbox_scatter_add, 'Value') ==...
+                     get(handles.checkbox_scatter_add, 'Max'));
+    for i = 1:length(handles.trial_nums)
+        trial_num = handles.trial_nums(i);
+        plot_scatter(handles.all_data.trial(trial_num).em_data,...
+                     add_as_series);
+    end
 end
 
 % Generate scatter with relevant background
@@ -345,7 +294,7 @@ function button_background_Callback(hObject, eventdata, handles)
         
         figure;
         
-        em_data = handles.all_data.em_data_for_trial(trial_num);
+        em_data = handles.all_data.trial(trial_num).em_data;
         x = em_data.xpix;
         y = em_data.ypix;
 
@@ -355,4 +304,53 @@ function button_background_Callback(hObject, eventdata, handles)
         plot(x, y, 'x');
         set(gca, 'ydir', 'normal');
     end
+end
+
+function button_xy_Callback(hObject, eventdata, handles)
+    for i = 1:length(handles.trial_nums)
+        trial_num = handles.trial_nums(i);
+        plot_xy(handles.all_data.trial(trial_num).em_data);
+    end
+end
+
+function button_hist_Callback(hObject, eventdata, handles)
+    for i = 1:length(handles.trial_nums)
+        trial_num = handles.trial_nums(i);
+        plot_hist(handles.all_data.trial(trial_num).em_data);
+    end
+end
+
+function button_gif_Callback(hObject, eventdata, handles)
+    for i = 1:length(handles.trial_nums)
+        trial_num = handles.trial_nums(i);
+        print_gif(handles.all_data.trial(trial_num).em_data);
+    end
+end
+
+function button_bcea_progression_Callback(hObject, eventdata, handles)
+    add_as_series = (get(handles.checkbox_progression_add, 'Value') ==...
+                     get(handles.checkbox_progression_add, 'Max'));
+    for i = 1:length(handles.trial_nums)
+        trial_num = handles.trial_nums(i);
+        plot_bcea_progression(handles.all_data.trial(trial_num).em_data,...
+                              add_as_series);
+    end
+end
+
+function button_logmar_bcea_Callback(hObject, eventdata, handles)
+    if get(handles.radio_all_data, 'Value') ==...
+       get(handles.radio_all_data, 'Max')
+        d = handles.all_data;
+    else
+        d = handles.desirable_data;
+    end
+    
+    plot_logmar_bcea(d);
+end
+
+% ----- Other helper functions ----- %
+
+function trial_nums = read_from_trial_num_edit(handles)
+    c = textscan(get(handles.trial_num_edit, 'String'), '%d');
+    trial_nums = c{1};
 end
