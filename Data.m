@@ -112,8 +112,8 @@ classdef Data < matlab.mixin.Copyable
         end
         
         function ts = type_str(obj)
-            ts = cell(size(obj.trial_num, 1), 1);
-            for i = 1:size(obj.trial_num, 1)
+            ts = cell(obj.size(), 1);
+            for i = 1:obj.size()
                 ts{i, 1} = type_str(obj.type(i));
             end
         end

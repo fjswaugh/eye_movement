@@ -284,7 +284,7 @@ end
 
 % Generate scatter with relevant background
 function button_background_Callback(hObject, eventdata, handles)
-    for i = 1:size(handles.trial_nums, 1)
+    for i = 1:length(handles.trial_nums)
         trial_num = handles.trial_nums(i);
         
         filename = bmp_filename(handles.all_data,...

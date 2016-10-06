@@ -8,13 +8,13 @@ function [] = print_gif(em_data, filename)
     xdeg = em_data.xdeg();
     ydeg = em_data.ydeg();
 
-    scalar_size = size(xdeg, 1);
+    len = length(xdeg);
 
-    xdegav = zeros(floor(scalar_size/mpf), 1);
-    ydegav = zeros(floor(scalar_size/mpf), 1);
+    xdegav = zeros(floor(len/mpf), 1);
+    ydegav = zeros(floor(len/mpf), 1);
 
     f = 1;  % Frame number
-    while f * mpf <= scalar_size
+    while f * mpf <= len
         start = f * mpf - mpf + 1;
         finish = f * mpf;
         xdegav(f) = mean(xdeg(start:finish));
