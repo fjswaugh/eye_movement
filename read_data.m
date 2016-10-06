@@ -1,4 +1,4 @@
-function data = read_data_from_files(em_filename, ps_filename, screen_res)
+function data = read_data(em_filename, ps_filename, screen_res)
     % ----- EM data ----- %
     
     em_file = fopen(em_filename, 'r');

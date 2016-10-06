@@ -7,7 +7,7 @@ ps_filename = '../psychophysics.txt';
 
 screen_res = [1600, 1200];
 
-all_data = read_data_from_files(em_filename, ps_filename, screen_res);
+all_data = read_data(em_filename, ps_filename, screen_res);
 
 % Save selected data as well (4 reverses and 2 controls)
 desirable_data = all_data.desirable_data();
