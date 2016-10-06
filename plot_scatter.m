@@ -7,8 +7,8 @@ function plot_scatter(em_data, add_as_series)
     figure(num);
     
     if add_as_series; hold on; end
-    plot(em_data.xdeg(), em_data.ydeg(), 's',...
-         'DisplayName', ['Trial ', num2str(em_data.trial_num())]);
+    plot(em_data.xdeg, em_data.ydeg, 's',...
+         'DisplayName', ['Trial ', num2str(em_data.trial_num)]);
     legend('-DynamicLegend', 2);
     if add_as_series; hold off; end
 

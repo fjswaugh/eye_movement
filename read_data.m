@@ -25,9 +25,9 @@ function data = read_data(em_filename, ps_filename, screen_res)
             trial_num = str2num(trial_num_str);
 
             raw_data = get_next_em_data(em_file);
-            data = EyeMovementData(trial_num, raw_data, screen_res, offset);
+            tmp = EyeMovementData(trial_num, raw_data, screen_res, offset);
 
-            em_data{end+1, 1} = data;
+            em_data{end+1, 1} = tmp;
         end
         
         % Get next line of file before re-entering loop

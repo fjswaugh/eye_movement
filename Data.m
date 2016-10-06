@@ -89,7 +89,7 @@ classdef Data < matlab.mixin.Copyable
             % Put the eye movement data into the right order in array,
             % matching up the trial numbers
             for i = 1:length(em_data)
-                trial_num = em_data{i}.trial_num();
+                trial_num = em_data{i}.trial_num;
                 indices = find(obj.trial_num == trial_num);
                 if ~isempty(indices)
                     obj.em_data{indices(end), 1} = em_data{i};
@@ -100,8 +100,8 @@ classdef Data < matlab.mixin.Copyable
         function b = bcea(obj)
             b = zeros(obj.size(), 1);
             for i = 1:obj.size();
-                b(i) = bcea(obj.em_data{i}.xdeg(),...
-                            obj.em_data{i}.ydeg(), 3);
+                b(i) = bcea(obj.em_data{i}.xdeg,...
+                            obj.em_data{i}.ydeg, 3);
             end
         end
         

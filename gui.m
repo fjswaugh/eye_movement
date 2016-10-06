@@ -204,9 +204,9 @@ function button_table_Callback(hObject, eventdata, handles)
     td(:, 3) = cellstr(d.image_char);
     td(:, 4) = d.type_str();
     for i = 1:d.size()
-        td{i, 5} = std(d.em_data{i}.xdeg());
-        td{i, 6} = std(d.em_data{i}.ydeg());
-        td{i, 7} = pearson(d.em_data{i}.xdeg(), d.em_data{i}.ydeg());
+        td{i, 5} = std(d.em_data{i}.xdeg);
+        td{i, 6} = std(d.em_data{i}.ydeg);
+        td{i, 7} = pearson(d.em_data{i}.xdeg, d.em_data{i}.ydeg);
     end
     td(:, 8) = num2cell(d.bcea);
     
@@ -327,7 +327,7 @@ function button_gif_Callback(hObject, eventdata, handles)
         
         [a, b] = uiputfile('*.gif',...
                            ['Save .gif for trial ',...
-                            num2str(em_data.trial_num()), ' as...']);
+                            num2str(em_data.trial_num), ' as...']);
         if a == 0; continue; end;
         filename = [b, a];
         

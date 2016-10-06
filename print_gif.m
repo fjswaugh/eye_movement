@@ -1,12 +1,12 @@
 function [] = print_gif(em_data, filename)
-    progression = real(bcea_progression(em_data.xdeg(), em_data.ydeg(), 3));
+    progression = real(bcea_progression(em_data.xdeg, em_data.ydeg, 3));
 
     mpf = 25;  % Milliseconds per frame
     
     num = figure();
     
-    xdeg = em_data.xdeg();
-    ydeg = em_data.ydeg();
+    xdeg = em_data.xdeg;
+    ydeg = em_data.ydeg;
 
     len = length(xdeg);
 
@@ -25,7 +25,7 @@ function [] = print_gif(em_data, filename)
         subplot(2,1,1);
         plot(xdegav, ydegav, 's');
         str = sprintf(['Average positions of eye fixation through time '...
-                       '(trial %d)'], em_data.trial_num());
+                       '(trial %d)'], em_data.trial_num);
         title(str);
         xlabel('x (degrees)');
         ylabel('y (degrees)');
@@ -36,7 +36,7 @@ function [] = print_gif(em_data, filename)
         title('BCEA progression over time');
         xlabel('Time (ms)');
         ylabel('BCEA (whatever units BCEA are in)');
-        time = em_data.time();
+        time = em_data.time;
         axis([time(1)          time(end)...
               min(progression) max(progression)]);
 

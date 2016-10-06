@@ -6,11 +6,11 @@ function [] = plot_bcea_progression(em_data, add_as_series)
     
     figure(num);
     
-    progression = real(bcea_progression(em_data.xdeg(), em_data.ydeg(), 3));
+    progression = real(bcea_progression(em_data.xdeg, em_data.ydeg, 3));
 
     if add_as_series; hold on; end
-    plot(em_data.time(), progression,...
-         'DisplayName', ['Trial ', num2str(em_data.trial_num())])
+    plot(em_data.time, progression,...
+         'DisplayName', ['Trial ', num2str(em_data.trial_num)])
     legend('-DynamicLegend', 2);
     if add_as_series; hold off; end
     
