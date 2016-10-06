@@ -328,11 +328,9 @@ function button_gif_Callback(hObject, eventdata, handles)
         [a, b] = uiputfile('*.gif',...
                            ['Save .gif for trial ',...
                             num2str(em_data.trial_num()), ' as...']);
+        if a == 0; continue; end;
         filename = [b, a];
-        if strcmp(filename, '')
-            continue;
-        end
-    
+        
         print_gif(em_data, filename);
     end
 end
