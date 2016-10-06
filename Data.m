@@ -12,9 +12,7 @@ classdef Data < matlab.mixin.Copyable
     methods
         % Constructor
         function obj = Data(raw_ps_data, em_data, meta)
-            if nargin == 0
-                return;
-            end
+            if nargin == 0; return; end;
             
             obj.meta = meta;
             
