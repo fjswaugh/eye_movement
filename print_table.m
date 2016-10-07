@@ -1,5 +1,5 @@
-function generate_table(data)
-%generate_table Prints a table of the data in a figure
+function print_table(data)
+%print_table Prints a table of the data in a figure
     
     f = figure;
     t = uitable(f);

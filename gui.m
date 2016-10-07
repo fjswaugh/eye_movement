@@ -195,7 +195,7 @@ function button_read_data_Callback(hObject, eventdata, handles)
 end
 
 function button_table_Callback(hObject, eventdata, handles)
-    generate_table(handles.all_data);
+    print_table(handles.all_data);
 end
 
 function start_limit_edit_Callback(hObject, eventdata, handles)
@@ -264,11 +264,21 @@ end
 function button_background_Callback(hObject, eventdata, handles)
     for i = 1:length(handles.trial_nums)
         trial_num = handles.trial_nums(i);
-        
+                    
         filename = bmp_filename(handles.all_data,...
                                 trial_num,...
                                 handles.background_dir);
-                            
+
+        choose_image = (get(handles.checkbox_choose_image, 'Value') ==...
+                        get(handles.checkbox_choose_image, 'Max'));
+        if choose_image
+            title_str = sprintf('Select background image for trial %d',...
+                                trial_num);
+            [a, b] = uigetfile('*.BMP', title_str);
+            if a == 0; continue; end;
+            filename = [b, a];
+        end
+        
         em_data = handles.all_data.trial(trial_num).em_data;
         
         plot_background(em_data, filename);
