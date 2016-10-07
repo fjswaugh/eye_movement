@@ -3,5 +3,5 @@ function str = meta_str(meta)
 
     str = ['flank: ', lower(meta.flank),...
            ', colour: ', lower(meta.color),...
-           ', luminance: ', meta.luminance];
+           ', luminance: ', num2str(meta.luminance)];
 end

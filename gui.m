@@ -187,6 +187,11 @@ function button_read_data_Callback(hObject, eventdata, handles)
     summary_data(:, 2) = handles.desirable_data.type_str();
     set(handles.summary_table, 'Data', summary_data);
     
+    % Show meta data
+    str = meta_str(handles.all_data.meta);
+    str(1) = upper(str(1));
+    set(handles.text_meta, 'String', str);
+    
     % Make everything below visible now data is loaded
     set(handles.button_table,   'Visible', 'on');
     set(handles.uipanel1,       'Visible', 'on');
