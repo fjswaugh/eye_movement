@@ -13,5 +13,12 @@ function plot_background(em_data, background_filename)
     hold on;
     plot(x, y, 'x');
     set(gca, 'ydir', 'normal');
+    
+    xlabel('x (pixels)');
+    ylabel('y (pixels)');
+    str = sprintf('Positions of eye fixation (trial %d)',...
+                  em_data.trial_num);
+    title(str);
+    
     hold off;
 end
