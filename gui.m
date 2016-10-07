@@ -197,6 +197,9 @@ function button_read_data_Callback(hObject, eventdata, handles)
     set(handles.uipanel1,       'Visible', 'on');
     set(handles.uibuttongroup1, 'Visible', 'on');
     set(handles.uibuttongroup2, 'Visible', 'on');
+    
+    % Finally, load a copy of the all_data variable into the workspace
+    assignin('base', 'data', handles.all_data.copy);
 end
 
 function button_table_Callback(hObject, eventdata, handles)
