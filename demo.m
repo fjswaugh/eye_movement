@@ -204,3 +204,13 @@ plot_background(data.trial(2).em_data, background_filename);
 
 % There is a gui program to easily make use of all the built-in functions.
 % Launch it by typing 'gui'
+
+% The gui contains file dialogs to select the correct data files (and, if
+% you wish, the location of the background .BMP files).
+%
+% There is then a button labelled 'Read data from files'. This will load
+% everything into memory, making the additional functions on the gui
+% appear. It will also load a copy of the data into the Matlab
+% workspace as a variable called 'data'. Therefore, the gui can be a
+% convenient way to load in data from files, even if the rest of its
+% functionality is undesired.
