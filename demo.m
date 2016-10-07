@@ -1,8 +1,9 @@
 %% Preliminaries
 
-% Select the filenames for the data
-em_filename = '../eye_movement.asc';
-ps_filename = '../psychophysics.txt';
+% We must first load the data into memory for one particular run.
+% So we must select the filenames for the data:
+em_filename = 'eye_movement.asc';
+ps_filename = 'psychophysics.txt';
 
 % Enter the screen resolution
 screen_res = [1600, 1200];
@@ -12,7 +13,8 @@ data = read_data(em_filename, ps_filename, screen_res);
 
 %% View how the data is structured
 
-disp(data);
+% The data is stored in an object that we have called 'data'.
+data
 
 %%
 
@@ -65,46 +67,53 @@ desirable_data = data.desirable_data()
 % Let's look at trial 5 again, this time picking out the eye movement data
 % associated with it. I'll save this in a new variable, so we don't have to
 % keep typing out data.trial(5).em_data all the time.
-em = data.trial(5).em_data;
+em_data = data.trial(5).em_data
+
+%%
+
+% Any part of this em_data can also be accessed with 'dot' syntax, e.g.
+em_data.xdeg
+
+%%
 
 % Now we could, say, calculate the BCEA for this trial
 % The bcea function takes arguments in the form bcea(x data, y data, k)
-bcea(em.xdeg, em.ydeg, 3)
+bcea(em_data.xdeg, em_data.ydeg, 3)
 
 %%
 
 % Perhaps now though we want to look only at a certain time period in the
 % data, for example for time 101ms -> 300ms
-em.set_limits(101, 300);
+em_data.set_limits(101, 300);
 
 % Now the eye movement data is different, with only 200 data points)
-em
+em_data
 
 %%
 
 % The bcea is also different:
-bcea(em.xdeg, em.ydeg, 3)
+bcea(em_data.xdeg, em_data.ydeg, 3)
 
 %%
 
 % Note that the extra data points for time not equal to 101->300ms is still
 % there. The size() method will give the original size of the data...
-em.size()
+em_data.size()
 
 %%
 
 % ...and the limits can also be easily removed to look at the whole time
 % period again.
-em.remove_limits();
+em_data.remove_limits();
 
 %%
 
 % There are also functions to calculate Pearson's cofficient, standard
-% deviations of x and y data, and a function that returns an array showing
-% how the BCEA value progresses over time.
-pearsons_coefficient       = pearson(em.xdeg, em.ydeg);
-standard_deviation_of_xdeg = std(em.xdeg);
-array_of_bcea_progression  = bcea_progression(em.xdeg, em.ydeg, 3);
+% deviations of x and y, and a function that returns an array showing how
+% the BCEA value progresses over time.
+pearsons_coefficient       = pearson(em_data.xdeg, em_data.ydeg)
+standard_deviation_of_xdeg = std(em_data.xdeg)
+array_of_bcea_progression  = bcea_progression(em_data.xdeg, em_data.ydeg, 3)
 
 %% Meta data
 
@@ -115,3 +124,83 @@ data.meta
 
 %% How to plot graphs with the data
 
+% First things first, let's print a table of all the data
+print_table(data);
+set(gcf, 'Position', [0 0 920 660]);
+
+%%
+
+% There are two ways to plot graphs. Either one can use the pre-made
+% functions to do it, or one can plot anything manually.
+
+% The pre-made functions are:
+%  - plot_xy(em_data)
+%  - plot_hist(em_data)
+%  - plot_scatter(em_data, add_as_series)
+%  - plot_bcea_progression(em_data, add_as_series)
+%  - plot_background(em_data, background_filename)
+%  - print_gif(em_data, filename)
+%  - plot_logmar_bcea(data)
+
+% Descriptions for all of these are included as comments at the start of
+% the function and should therefore be available to view in Matlab help.
+
+%%
+
+% Let's look at plot_scatter() as an example. It takes two arguments, the
+% first being an object containing some eye movement data (em_data), and
+% the second being a boolean 'add_as_series' that asks whether to add this
+% eye movement data as a series on top of a previous plot (if a previous
+% plot exists).
+
+% Usage might be as follows (for example's sake, we are examining eye
+% movement data for trial 3):
+plot_scatter(data.trial(3).em_data, false);
+
+% Now, assuming we wish to examine the eye movement scatter for trial 4 on
+% the same graph, we could write:
+plot_scatter(data.trial(4).em_data, true);
+
+%%
+
+% The plot_scatter() function should produce a sensible plot with labelled
+% axes, but if something different is desired then plotting manually might
+% be sensible (or indeed you could edit the function itself if you wished).
+
+% To give an example, let's plot something for which there is (currently)
+% no function. Perhaps the pupil size data over time for trial 6. We will
+% use the standard Matlab function plot().
+plot(data.trial(6).em_data.time, data.trial(6).em_data.pupil_area, '.');
+xlabel('time (ms)');
+ylabel('pupil area');
+title('Pupil area for trial 6 over time');
+
+%%
+
+% Perhaps we wish to combine this pupil area data with position data. We
+% could plot a scatter where the size of the points is related (not
+% proportionally though) to the area of the pupil.
+em_data = data.trial(6).em_data;
+scatter(em_data.xdeg, em_data.ydeg,...
+        (em_data.pupil_area/1000).^7, 'filled');
+xlabel('x (deg)');
+ylabel('y (deg)');
+title('Eye fixation scatter with point size related to pupil area');
+
+%%
+
+% As a final example, let's draw a scatter graph over a background image of
+% the actual letter presented to the subject in the experiment.
+
+% First, we can use a function provided to find the filename of the .BMP
+% associated with the trial that we wish to examine (say trial 2). We must
+% include the directory containing all the BMP files for it to search in
+% (in this case that is '../stick/bmp'. Inside this directory must be all
+% .BMP files individually, as the function will not look in subdirectories.
+background_filename = bmp_filename(data, 2, '../stick/bmp');
+plot_background(data.trial(2).em_data, background_filename);
+
+%% Using the GUI
+
+% There is a gui program to easily make use of all the built-in functions.
+% Launch it by typing 'gui'
