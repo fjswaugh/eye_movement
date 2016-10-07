@@ -268,19 +268,10 @@ function button_background_Callback(hObject, eventdata, handles)
         filename = bmp_filename(handles.all_data,...
                                 trial_num,...
                                 handles.background_dir);
-        background = imread(filename);
-        
-        figure;
-        
+                            
         em_data = handles.all_data.trial(trial_num).em_data;
-        x = em_data.xpix;
-        y = em_data.ypix;
-
-        imagesc([1 1600], [1 1200], flipud(background));
         
-        hold on;
-        plot(x, y, 'x');
-        set(gca, 'ydir', 'normal');
+        plot_background(em_data, filename);
     end
 end
 
