@@ -1,4 +1,6 @@
 function data = read_data(em_filename, ps_filename, screen_res)
+%read_data Read in raw data from filenames given and return data object
+
     % ----- EM data ----- %
     
     em_file = fopen(em_filename, 'r');
