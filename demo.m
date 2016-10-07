@@ -72,7 +72,7 @@ em_data = data.trial(5).em_data
 %%
 
 % Any part of this em_data can also be accessed with 'dot' syntax, e.g.
-em_data.xdeg
+em_data.trial_num
 
 %%
 
@@ -111,9 +111,9 @@ em_data.remove_limits();
 % There are also functions to calculate Pearson's cofficient, standard
 % deviations of x and y, and a function that returns an array showing how
 % the BCEA value progresses over time.
-pearsons_coefficient       = pearson(em_data.xdeg, em_data.ydeg)
-standard_deviation_of_xdeg = std(em_data.xdeg)
-array_of_bcea_progression  = bcea_progression(em_data.xdeg, em_data.ydeg, 3)
+pearsons_coefficient       = pearson(em_data.xdeg, em_data.ydeg);
+standard_deviation_of_xdeg = std(em_data.xdeg);
+array_of_bcea_progression  = bcea_progression(em_data.xdeg, em_data.ydeg, 3);
 
 %% Meta data
 
