@@ -8,12 +8,12 @@ ps_filename = 'psychophysics.txt';
 % Enter the screen resolution
 screen_res = [1600, 1200];
 
-% Read in the data from the filenames given, using the screen_res selected
+% And read in the data
 data = read_data(em_filename, ps_filename, screen_res);
 
 %% View how the data is structured
 
-% The data is stored in an object that we have called 'data'.
+% The data is stored in an object we have named 'data'.
 data
 
 %%
@@ -46,7 +46,7 @@ data.trial(5).type
 % This isn't particularly informative. Luckily there is a function to
 % translate this number into a helpful string.
 % The result of this function will be one of six possibilities:
-%  - 'Correct reversal'
+%  - 'Correct catch'
 %  - 'Correct reversal'
 %  - 'Correct'
 %  - 'Incorrect'
@@ -96,14 +96,14 @@ bcea(em_data.xdeg, em_data.ydeg, 3)
 
 %%
 
-% Note that the extra data points for time not equal to 101->300ms is still
-% there. The size() method will give the original size of the data...
+% Note that the extra data points for time not equal to 101->300ms are
+% still saved. The size() method will give the original size of the data...
 em_data.size()
 
 %%
 
-% ...and the limits can also be easily removed to look at the whole time
-% period again.
+% ...and the limits can be easily removed to look at the whole time period
+% again.
 em_data.remove_limits();
 
 %%
@@ -126,12 +126,12 @@ data.meta
 
 % First things first, let's print a table of all the data
 print_table(data);
-set(gcf, 'Position', [0 0 920 660]);
+set(gcf, 'Position', [0 0 920 660]);  % Expand window containing the table
 
 %%
 
-% There are two ways to plot graphs. Either one can use the pre-made
-% functions to do it, or one can plot anything manually.
+% There are two ways to plot graphs. Using the pre-made functions, or
+% plotting something manually.
 
 % The pre-made functions are:
 %  - plot_xy(em_data)
@@ -210,7 +210,9 @@ plot_background(data.trial(2).em_data, background_filename);
 %
 % There is then a button labelled 'Read data from files'. This will load
 % everything into memory, making the additional functions on the gui
-% appear. It will also load a copy of the data into the Matlab
-% workspace as a variable called 'data'. Therefore, the gui can be a
-% convenient way to load in data from files, even if the rest of its
-% functionality is undesired.
+% appear.
+%
+% It will also load a copy of the data into the Matlab workspace as a
+% variable called 'data'. Therefore, the gui can be a convenient way to
+% load in data from files, even if the rest of its functionality is
+% undesired.
