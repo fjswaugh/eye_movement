@@ -144,7 +144,7 @@ classdef Data < matlab.mixin.Copyable
             d.em_data    = obj.em_data{index, 1}.copy();
         end
         
-        function i = index_for_trial(obj, num)
+        function index = index_for_trial(obj, num)
             if length(num) ~= 1
                 error('Cannot accept multiple trial numbers');
             end
