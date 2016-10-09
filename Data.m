@@ -123,27 +123,6 @@ classdef Data < matlab.mixin.Copyable
             end
         end
         
-        function d = trial(obj, num)
-            if length(num) ~= 1
-                error('Cannot accept multiple trial numbers');
-            end
-            
-            index = find(obj.trial_num == num);
-            if isempty(index)
-                error('Trial number not found');
-            elseif length(index) ~= 1
-                error('Multiple trials of specified number found');
-            end
-            
-            d = obj.copy();
-            d.trial_num  = obj.trial_num(index);
-            d.logmar     = obj.logmar(index);
-            d.desirable  = obj.desirable(index);
-            d.type       = obj.type(index);
-            d.image_char = obj.image_char(index);
-            d.em_data    = obj.em_data{index, 1}.copy();
-        end
-        
         function index = index_for_trial(obj, num)
             if length(num) ~= 1
                 error('Cannot accept multiple trial numbers');

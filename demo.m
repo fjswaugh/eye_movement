@@ -31,28 +31,30 @@ data.logmar
 %  - image_char (the letter that was being identified)
 %  - em_data (an object containing fixed eye movement data for the trial)
 
-% To access any datum for one particular trial, the trial() method can be
-% used. The following line will therefore print out all the data for trial
-% number 5 (which may or may not be the 5th row of the data).
-data.trial(5)
+% To access any datum for one particular trial, the index for that trial
+% must be found. Say we are interested in trial 5. We must find the index
+% at which trial 5 is stored (this will more than likely, but not
+% necessarily, also have a value of 5).
+index = data.index_of_trial(5)
 
 %%
 
-% From here, we could examine, say, the 'type' of trial 5
-data.trial(5).type
+% From here, we could examine, say, the 'type' of trial 5. 'data.type' is
+% an array, and so any value can be accessed with the bracket notation:
+data.type(index)
 
 %%
 
-% This isn't particularly informative. Luckily there is a function to
-% translate this number into a helpful string.
-% The result of this function will be one of six possibilities:
+% Although this does represent the 'type' of trial 5, it isn't particularly
+% helpful. Luckily there's a function to translate this number to a string.
+% The result of will be one of six possibilities:
 %  - 'Correct catch'
 %  - 'Correct reversal'
 %  - 'Correct'
 %  - 'Incorrect'
 %  - 'Incorrect reversal'
 %  - 'Incorrect catch' (an unusual result, given the size of catch trials)
-type_str(data.trial(5).type)
+type_str(data.type(index))
 
 %%
 
@@ -65,9 +67,19 @@ desirable_data = data.desirable_data()
 %% Eye movement data
 
 % Let's look at trial 5 again, this time picking out the eye movement data
-% associated with it. I'll save this in a new variable, so we don't have to
-% keep typing out data.trial(5).em_data all the time.
-em_data = data.trial(5).em_data
+% associated with it. I'll save this in a new variable, to avoid excessive
+% typing.
+%
+% There are two things to notice here:
+%   1. Once we know the index for trial 5, we must use the {} notation to
+%      pick out an eye movement data point. This is because em_data is
+%      stored in a cell array, rather than a normal array.
+%   2. Because EyeMovementData is a handle class, if we wish to make a copy
+%      we must use the em_data.copy() method as shown below. If we didn't
+%      use the copy() method, then we would only be creating a reference,
+%      or handle, to the data.
+index = data.index_for_trial(5);
+em_data = data.em_data{index}.copy()
 
 %%
 
@@ -155,11 +167,13 @@ set(gcf, 'Position', [0 0 920 660]);  % Expand window containing the table
 
 % Usage might be as follows (for example's sake, we are examining eye
 % movement data for trial 3):
-plot_scatter(data.trial(3).em_data, false);
+index = data.index_for_trial(3);
+plot_scatter(data.em_data{index}.copy(), false);
 
 % Now, assuming we wish to examine the eye movement scatter for trial 4 on
 % the same graph, we could write:
-plot_scatter(data.trial(4).em_data, true);
+index = data.index_for_trial(4);
+plot_scatter(data.em_data{index}.copy(), true);
 
 %%
 
@@ -170,7 +184,9 @@ plot_scatter(data.trial(4).em_data, true);
 % To give an example, let's plot something for which there is (currently)
 % no function. Perhaps the pupil size data over time for trial 6. We will
 % use the standard Matlab function plot().
-plot(data.trial(6).em_data.time, data.trial(6).em_data.pupil_area, '.');
+index = data.index_for_trial(6);
+em_data = data.em_data{index}.copy();
+plot(em_data.time, em_data.pupil_area, '.');
 xlabel('time (ms)');
 ylabel('pupil area');
 title('Pupil area for trial 6 over time');
@@ -180,7 +196,6 @@ title('Pupil area for trial 6 over time');
 % Perhaps we wish to combine this pupil area data with position data. We
 % could plot a scatter where the size of the points is related (not
 % proportionally though) to the area of the pupil.
-em_data = data.trial(6).em_data;
 scatter(em_data.xdeg, em_data.ydeg,...
         (em_data.pupil_area/1000).^7, 'filled');
 xlabel('x (deg)');
@@ -197,8 +212,8 @@ title('Eye fixation scatter with point size related to pupil area');
 % include the directory containing all the BMP files for it to search in
 % (in this case that is '../stick/bmp'. Inside this directory must be all
 % .BMP files individually, as the function will not look in subdirectories.
-background_filename = bmp_filename(data, 2, '../stick/bmp');
-plot_background(data.trial(2).em_data, background_filename);
+bg_filename = bmp_filename(data, 2, '../stick/bmp');
+plot_background(data.em_data{data.index_for_trial(2)}, bg_filename);
 
 %% Using the GUI
 
