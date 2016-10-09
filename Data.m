@@ -16,8 +16,6 @@ classdef Data < matlab.mixin.Copyable
             
             obj.meta = meta;
             
-            % Takes in em_data_size because size(em_data, 1) doesn't work for
-            % some reason
             obj.trial_num = 1:size(raw_ps_data, 1);
             obj.trial_num = obj.trial_num';
             obj.logmar = raw_ps_data(:, 1);
