@@ -262,8 +262,8 @@ function button_scatter_Callback(hObject, eventdata, handles)
     add_as_series = (get(handles.checkbox_scatter_add, 'Value') ==...
                      get(handles.checkbox_scatter_add, 'Max'));
     for i = 1:length(handles.trial_nums)
-        trial_num = handles.trial_nums(i);
-        plot_scatter(handles.all_data.trial(trial_num).em_data,...
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        plot_scatter(handles.all_data.em_data{index}.copy(),...
                      add_as_series);
     end
 end
@@ -287,7 +287,8 @@ function button_background_Callback(hObject, eventdata, handles)
             filename = [b, a];
         end
         
-        em_data = handles.all_data.trial(trial_num).em_data;
+        index = handles.all_data.index_for_trial(trial_num);
+        em_data = handles.all_data.em_data{index}.copy();
         
         plot_background(em_data, filename);
     end
@@ -295,22 +296,24 @@ end
 
 function button_xy_Callback(hObject, eventdata, handles)
     for i = 1:length(handles.trial_nums)
-        trial_num = handles.trial_nums(i);
-        plot_xy(handles.all_data.trial(trial_num).em_data);
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        plot_xy(handles.all_data.em_data{index}.copy());
     end
 end
 
 function button_hist_Callback(hObject, eventdata, handles)
     for i = 1:length(handles.trial_nums)
-        trial_num = handles.trial_nums(i);
-        plot_hist(handles.all_data.trial(trial_num).em_data);
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        plot_hist(handles.all_data.em_data{index}.copy());
     end
 end
 
 function button_gif_Callback(hObject, eventdata, handles)
     for i = 1:length(handles.trial_nums)
         trial_num = handles.trial_nums(i);
-        em_data = handles.all_data.trial(trial_num).em_data;
+        
+        index = handles.all_data.index_for_trial(trial_num);
+        em_data = handles.all_data.em_data{index}.copy();
         
         [a, b] = uiputfile('*.gif',...
                            ['Save .gif for trial ',...
@@ -326,8 +329,8 @@ function button_bcea_progression_Callback(hObject, eventdata, handles)
     add_as_series = (get(handles.checkbox_progression_add, 'Value') ==...
                      get(handles.checkbox_progression_add, 'Max'));
     for i = 1:length(handles.trial_nums)
-        trial_num = handles.trial_nums(i);
-        plot_bcea_progression(handles.all_data.trial(trial_num).em_data,...
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        plot_bcea_progression(handles.all_data.em_data{index}.copy(),...
                               add_as_series);
     end
 end
