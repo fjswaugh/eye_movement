@@ -173,4 +173,23 @@ classdef Data < matlab.mixin.Copyable
             end
         end
     end
+    
+    methods (Access = protected)
+        % Override copyElement method
+        function cp_obj = copyElement(obj)
+            % Make a shallow copy of normal properties
+            cp_obj = copyElement@matlab.mixin.Copyable(obj);
+            
+            % Make a deep copy of the eye movement data, taking into
+            % account whether or not it is contained within a cell array
+            if iscell(obj.em_data)
+                cp_obj.em_data = cell(obj.size(), 1);
+                for i = 1:obj.size()
+                    cp_obj.em_data{i} = copy(obj.em_data{i});
+                end
+            else
+                cp_obj.em_data = copy(obj.em_data);
+            end
+        end
+    end
 end
