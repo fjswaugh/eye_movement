@@ -141,7 +141,7 @@ classdef Data < matlab.mixin.Copyable
             d.desirable  = obj.desirable(index);
             d.type       = obj.type(index);
             d.image_char = obj.image_char(index);
-            d.em_data    = obj.em_data{index, 1};
+            d.em_data    = obj.em_data{index, 1}.copy();
         end
         
         function set_limits(obj, a, b)
@@ -169,7 +169,7 @@ classdef Data < matlab.mixin.Copyable
             % Now do em_data
             d.em_data = cell(length(indices), 1);
             for i = 1:length(indices)
-                d.em_data{i, 1} = obj.em_data{indices(i), 1};
+                d.em_data{i, 1} = obj.em_data{indices(i), 1}.copy();
             end
         end
     end
@@ -185,10 +185,10 @@ classdef Data < matlab.mixin.Copyable
             if iscell(obj.em_data)
                 cp_obj.em_data = cell(obj.size(), 1);
                 for i = 1:obj.size()
-                    cp_obj.em_data{i} = copy(obj.em_data{i});
+                    cp_obj.em_data{i} = obj.em_data{i}.copy();
                 end
             else
-                cp_obj.em_data = copy(obj.em_data);
+                cp_obj.em_data = obj.em_data.copy();
             end
         end
     end
