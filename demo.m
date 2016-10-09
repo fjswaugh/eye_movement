@@ -35,7 +35,7 @@ data.logmar
 % must be found. Say we are interested in trial 5. We must find the index
 % at which trial 5 is stored (this will more than likely, but not
 % necessarily, also have a value of 5).
-index = data.index_of_trial(5)
+index = data.index_for_trial(5)
 
 %%
 
