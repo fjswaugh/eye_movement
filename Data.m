@@ -144,6 +144,19 @@ classdef Data < matlab.mixin.Copyable
             d.em_data    = obj.em_data{index, 1}.copy();
         end
         
+        function i = index_for_trial(obj, num)
+            if length(num) ~= 1
+                error('Cannot accept multiple trial numbers');
+            end
+            
+            index = find(obj.trial_num == num);
+            if isempty(index)
+                error('Trial number not found');
+            elseif length(index) ~= 1
+                error('Multiple trials of specified number found');
+            end
+        end
+        
         function set_limits(obj, a, b)
             for i = 1:obj.size()
                 obj.em_data{i}.set_limits(a, b);
