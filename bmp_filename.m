@@ -1,11 +1,13 @@
 function filename = bmp_filename(data, trial_num, dir_name)
     meta = data.meta;
     
-    logmar = data.trial(trial_num).logmar;
+    index = data.index_for_trial(trial_num);
+    
+    logmar = data.logmar(index);
     logmar_str = num2str(logmar);
     logmar_str = logmar_str(1:6);
     
-    letter = data.trial(trial_num).image_char;
+    letter = data.image_char(index);
     
     lum_str = num2str(meta.luminance);
     if strcmp(lum_str, '0'); lum_str = 'CM'; end;
