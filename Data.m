@@ -96,6 +96,7 @@ classdef Data < matlab.mixin.Copyable
         end
         
         function b = bcea(obj)
+        % BCEA  Calculates the B.C.E.A.s for each data point.
             b = zeros(obj.size(), 1);
             for i = 1:obj.size();
                 b(i) = bcea(obj.em_data{i}.xdeg,...
