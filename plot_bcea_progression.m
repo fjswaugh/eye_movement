@@ -1,6 +1,9 @@
-function [] = plot_bcea_progression(em_data, add_as_series)
+function [] = plot_bcea_progression(em_data, add_as_series, figure_num)
     persistent num;
-    if not(add_as_series) || isempty(num) || not(ishandle(num))
+    
+    if vargin == 3
+        num = figure_num;
+    elseif not(add_as_series) || isempty(num) || not(ishandle(num))
         num = figure();
     end
     
