@@ -28,16 +28,17 @@ function plot_logmar_bcea(data)
     
     % Now plot legend explaining colors
     axes(ax1);
+    count = 0;  % Count of data series plotted
     for i = [1, -1, 3, -3, 2, -2]  % Least interesting to most interesting
         if i == 0; continue; end;
         xx = x(data.type == i);
         yy = y(data.type == i);
         if isempty(xx); continue; end;
+        count = count + 1;
         
         % Now add label for point, because the legend is broken
         points_str = sprintf('• %s', type_str(i));
-        ypos = i * 0.1 + 1;
-        if ypos > 1; ypos = ypos - 0.1; end;
+        ypos = count * 0.1 + 0.9;
         t = text(.025, ypos*0.5, points_str);
         t.Color = type_color(i);
         t.FontSize = 9;
