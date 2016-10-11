@@ -1,4 +1,4 @@
-function plot_scatter(em_data, add_as_series, figure_num)
+function figure_num = plot_scatter(em_data, add_as_series, figure_num)
     persistent num;
     
     if nargin == 3
@@ -18,4 +18,6 @@ function plot_scatter(em_data, add_as_series, figure_num)
     xlabel('x (degrees)');
     ylabel('y (degrees)');
     title('Positions of eye fixation');
+    
+    figure_num = num;
 end

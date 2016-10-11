@@ -257,16 +257,24 @@ function button_scatter_Callback(hObject, eventdata, handles)
                      get(handles.radio_scatter_same, 'Max'));
     specific_figure = (get(handles.radio_scatter_figure, 'Value') ==...
                        get(handles.radio_scatter_figure, 'Max'));
-                   
+    
+    ellipse = (get(handles.checkbox_scatter_ellipse, 'Value') ==...
+               get(handles.checkbox_scatter_ellipse, 'Max'));
+    
     for i = 1:length(handles.trial_nums)
         index = handles.all_data.index_for_trial(handles.trial_nums(i));
         em_data = handles.all_data.em_data{index}.copy();
         
         if specific_figure
             figure = str2num(get(handles.edit_scatter_figure, 'String'));
-            plot_scatter(em_data, 1, figure);
+            figure = plot_scatter(em_data, 1, figure);
         else
-            plot_scatter(em_data, add_as_series);
+            figure = plot_scatter(em_data, add_as_series);
+        end
+        
+        if ellipse
+            k = str2double(get(handles.edit_scatter_k, 'String'));
+            plot_ellipse(em_data, k, figure);
         end
     end
 end
