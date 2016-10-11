@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 01-Oct-2016 18:18:26
+% Last Modified by GUIDE v2.5 11-Oct-2016 15:35:12
 
 % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -66,10 +66,7 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
     
     % Make everything below invisible so the user can't press anything
     % before data has been loaded
-    set(handles.button_table,                     'Visible', 'off');
-    set(handles.uipanel1,                         'Visible', 'off');
-    set(handles.uibuttongroup1,                   'Visible', 'off');
-    set(handles.uibuttongroup2,                   'Visible', 'off');
+    set(handles.panel_data, 'Visible', 'off');
     
     imshow('logo.png');
 end
@@ -190,13 +187,10 @@ function button_read_data_Callback(hObject, eventdata, handles)
     % Show meta data
     str = meta_str(handles.all_data.meta);
     str(1) = upper(str(1));
-    set(handles.text_meta, 'String', str);
+    set(handles.panel_data, 'Title', str);
     
     % Make everything below visible now data is loaded
-    set(handles.button_table,   'Visible', 'on');
-    set(handles.uipanel1,       'Visible', 'on');
-    set(handles.uibuttongroup1, 'Visible', 'on');
-    set(handles.uibuttongroup2, 'Visible', 'on');
+    set(handles.panel_data, 'Visible', 'on');
     
     % Finally, load a copy of the all_data variable into the workspace
     assignin('base', 'data', handles.all_data.copy);
@@ -259,12 +253,21 @@ function checkbox_relevant_trials_Callback(hObject, eventdata, handles)
 end
 
 function button_scatter_Callback(hObject, eventdata, handles)
-    add_as_series = (get(handles.checkbox_scatter_add, 'Value') ==...
-                     get(handles.checkbox_scatter_add, 'Max'));
+    add_as_series = (get(handles.radio_scatter_same, 'Value') ==...
+                     get(handles.radio_scatter_same, 'Max'));
+    specific_figure = (get(handles.radio_scatter_figure, 'Value') ==...
+                       get(handles.radio_scatter_figure, 'Max'));
+                   
     for i = 1:length(handles.trial_nums)
         index = handles.all_data.index_for_trial(handles.trial_nums(i));
-        plot_scatter(handles.all_data.em_data{index}.copy(),...
-                     add_as_series);
+        em_data = handles.all_data.em_data{index}.copy();
+        
+        if specific_figure
+            figure = str2num(get(handles.edit_scatter_figure, 'String'));
+            plot_scatter(em_data, 1, figure);
+        else
+            plot_scatter(em_data, add_as_series);
+        end
     end
 end
 
@@ -289,6 +292,12 @@ function button_background_Callback(hObject, eventdata, handles)
         
         index = handles.all_data.index_for_trial(trial_num);
         em_data = handles.all_data.em_data{index}.copy();
+        
+        xoffset = str2double(get(handles.edit_xoffset, 'String'));
+        yoffset = str2double(get(handles.edit_yoffset, 'String'));
+        
+        em_data.xpix = em_data.xpix + xoffset;
+        em_data.ypix = em_data.ypix + yoffset;
         
         plot_background(em_data, filename);
     end
@@ -344,6 +353,22 @@ function button_logmar_bcea_Callback(hObject, eventdata, handles)
     end
     
     plot_logmar_bcea(d);
+end
+
+function button_em_table_Callback(hObject, eventdata, handles)
+end
+
+function button_pupil_area_Callback(hObject, eventdata, handles)
+end
+
+function edit_scatter_figure_Callback(hObject, eventdata, handles)
+end
+
+function edit_scatter_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 end
 
 % ----- Other helper functions ----- %
