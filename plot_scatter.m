@@ -1,7 +1,7 @@
 function plot_scatter(em_data, add_as_series, figure_num)
     persistent num;
     
-    if vargin == 3
+    if nargin == 3
         num = figure_num;
     elseif not(add_as_series) || isempty(num) || not(ishandle(num))
         num = figure();
