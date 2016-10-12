@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 11-Oct-2016 15:35:12
+% Last Modified by GUIDE v2.5 12-Oct-2016 12:43:16
 
 % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -258,23 +258,36 @@ function button_scatter_Callback(hObject, eventdata, handles)
     specific_figure = (get(handles.radio_scatter_figure, 'Value') ==...
                        get(handles.radio_scatter_figure, 'Max'));
     
-    ellipse = (get(handles.checkbox_scatter_ellipse, 'Value') ==...
-               get(handles.checkbox_scatter_ellipse, 'Max'));
-    
     for i = 1:length(handles.trial_nums)
         index = handles.all_data.index_for_trial(handles.trial_nums(i));
         em_data = handles.all_data.em_data{index}.copy();
         
         if specific_figure
             figure = str2num(get(handles.edit_scatter_figure, 'String'));
-            figure = plot_scatter(em_data, 1, figure);
+            plot_scatter(em_data, 1, figure);
         else
-            figure = plot_scatter(em_data, add_as_series);
+            plot_scatter(em_data, add_as_series);
         end
+    end
+end
+
+function button_ellipse_Callback(hObject, eventdata, handles)
+    add_as_series = (get(handles.radio_ellipse_same, 'Value') ==...
+                     get(handles.radio_ellipse_same, 'Max'));
+    specific_figure = (get(handles.radio_ellipse_figure, 'Value') ==...
+                       get(handles.radio_ellipse_figure, 'Max'));
+                   
+    k = str2double(get(handles.edit_scatter_k, 'String'));
+
+    for i = 1:length(handles.trial_nums)
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        em_data = handles.all_data.em_data{index}.copy();
         
-        if ellipse
-            k = str2double(get(handles.edit_scatter_k, 'String'));
-            plot_ellipse(em_data, k, figure);
+        if specific_figure
+            figure = str2num(get(handles.edit_ellipse_figure, 'String'));
+            plot_ellipse(em_data, k, 1, figure);
+        else
+            plot_ellipse(em_data, k, add_as_series);
         end
     end
 end
@@ -377,6 +390,44 @@ function edit_scatter_figure_CreateFcn(hObject, eventdata, handles)
                        get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
+    
+    set(hObject, 'Enable', 'off');
+end
+
+function edit_ellipse_figure_Callback(hObject, eventdata, handles)
+end
+
+function edit_ellipse_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+    set(hObject, 'Enable', 'off');
+end
+
+function radio_ellipse_figure_Callback(hObject, eventdata, handles)
+    set(handles.edit_ellipse_figure, 'Enable', 'on');
+end
+
+function radio_scatter_figure_Callback(hObject, eventdata, handles)
+    set(handles.edit_scatter_figure, 'Enable', 'on');
+end
+
+function radio_ellipse_same_Callback(hObject, eventdata, handles)
+    set(handles.edit_ellipse_figure, 'Enable', 'off');
+end
+
+function radio_ellipse_new_Callback(hObject, eventdata, handles)
+    set(handles.edit_ellipse_figure, 'Enable', 'off');
+end
+
+function radio_scatter_same_Callback(hObject, eventdata, handles)
+    set(handles.edit_scatter_figure, 'Enable', 'off');
+end
+
+function radio_scatter_new_Callback(hObject, eventdata, handles)
+        set(handles.edit_scatter_figure, 'Enable', 'off');
 end
 
 % ----- Other helper functions ----- %
@@ -385,3 +436,4 @@ function trial_nums = read_from_trial_num_edit(handles)
     c = textscan(get(handles.trial_num_edit, 'String'), '%d');
     trial_nums = c{1};
 end
+
