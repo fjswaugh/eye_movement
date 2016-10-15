@@ -4,7 +4,7 @@ function print_table(data)
     f = figure;
     t = uitable(f);
     
-    td = cell(data.size(), 8);
+    td = cell(data.size(), 9);
     
     td(:, 1) = num2cell(data.trial_num);
     td(:, 2) = num2cell(data.logmar);
@@ -14,17 +14,19 @@ function print_table(data)
         td{i, 5} = std(data.em_data{i}.xdeg);
         td{i, 6} = std(data.em_data{i}.ydeg);
         td{i, 7} = pearson(data.em_data{i}.xdeg, data.em_data{i}.ydeg);
+        td{i, 9} = mean(data.em_data{i}.pupil_area);
     end
     td(:, 8) = num2cell(data.bcea);
     
     t.Data = td;
     t.ColumnName = {'Trial',    'LogMAR',  'Image char', 'Type',...
-                    'σ(xdeg)',  'σ(ydeg)', 'Pearson',    'BCEA'};
+                    'σ(xdeg)',  'σ(ydeg)', 'Pearson',    'BCEA',...
+                    'Mean pupil area'};
     t.BackgroundColor = ones(data.size(), 3);
     t.BackgroundColor(:, 1) = (-204/255) * data.desirable + 1;
     t.BackgroundColor(:, 2) = (-119/255) * data.desirable + 1;
-    t.ColumnWidth = {80, 120, 90, 150, 120, 120, 120, 120};
-    t.Position = [0, 0, 960, 600];
-    f.Position = [0, 0, 960, 600];
+    t.ColumnWidth = {80, 120, 90, 150, 120, 120, 120, 120, 120};
+    t.Position = [0, 0, 1080, 600];
+    f.Position = [0, 0, 1080, 600];
     t.RowName = [];
 end
