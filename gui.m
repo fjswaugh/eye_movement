@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 15-Oct-2016 20:36:05
+% Last Modified by GUIDE v2.5 15-Oct-2016 21:12:44
 
 % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -120,6 +120,40 @@ function trial_num_edit_CreateFcn(hObject, eventdata, handles)
     end
 end
 
+function edit_scatter_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+    set(hObject, 'Enable', 'off');
+end
+
+function edit_ellipse_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+    set(hObject, 'Enable', 'off');
+end
+
+function edit_bcea_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject, 'Enable', 'off');
+end
+
+function edit_pa_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject, 'Enable', 'off');
+end
+
 % ----- Callback functions ----- %
 
 function em_filename_edit_Callback(hObject, eventdata, handles)
@@ -161,11 +195,16 @@ function button_browse_background_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
 end
 
-function button_read_data_Callback(hObject, eventdata, handles)    
+function button_read_data_Callback(hObject, eventdata, handles)
+    leave_in_saccades = (get(handles.checkbox_saccades, 'Value') ==...
+                         get(handles.checkbox_saccades, 'Max'));
+
     screen_res = [1600, 1200];
+    
     handles.all_data = read_data(handles.em_filename,...
                                  handles.ps_filename,...
-                                 screen_res);
+                                 screen_res,...
+                                 leave_in_saccades);
     
     % Save selected data as well (4 reverses and 2 controls)
     handles.desirable_data = handles.all_data.desirable_data();
@@ -401,40 +440,6 @@ function button_pupil_area_Callback(hObject, eventdata, handles)
             plot_pupil_area(em_data, 0);
         end
     end
-end
-
-function edit_scatter_figure_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'),...
-                       get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    
-    set(hObject, 'Enable', 'off');
-end
-
-function edit_ellipse_figure_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'),...
-                       get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    
-    set(hObject, 'Enable', 'off');
-end
-
-function edit_bcea_figure_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'),...
-                       get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject, 'Enable', 'off');
-end
-
-function edit_pa_figure_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'),...
-                       get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject, 'Enable', 'off');
 end
 
 function radio_ellipse_figure_Callback(hObject, eventdata, handles)

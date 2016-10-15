@@ -1,6 +1,11 @@
-function data = read_data(em_filename, ps_filename, screen_res)
+function data = read_data(em_filename, ps_filename, screen_res,...
+                          leave_in_saccades)
 %read_data Read in raw data from filenames given and return data object
 
+    if nargin == 3
+        leave_in_saccades = false;
+    end
+    
     % ----- EM data ----- %
     
     em_file = fopen(em_filename, 'r');
@@ -26,7 +31,7 @@ function data = read_data(em_filename, ps_filename, screen_res)
             trial_num_str = tmp{1}{4};
             trial_num = str2num(trial_num_str);
 
-            raw_data = get_next_em_data(em_file);
+            raw_data = get_next_em_data(em_file, leave_in_saccades);
             tmp = EyeMovementData(trial_num, raw_data, screen_res, offset);
 
             em_data{end+1, 1} = tmp;
@@ -56,7 +61,7 @@ function data = read_data(em_filename, ps_filename, screen_res)
     data = Data(raw_ps_data, em_data, meta);
 end
 
-function [raw_data] = get_next_em_data(file)
+function [raw_data] = get_next_em_data(file, leave_in_saccades)
     % Use a cell array to store data because it grows much faster than a
     % matrix. We will then convert the array to a matrix after it's full.
     cell_array = cell(0, 1);
@@ -80,7 +85,7 @@ function [raw_data] = get_next_em_data(file)
             eye_open = true;
         % All legitimate data lines end in ... (so test this to make sure)
         elseif str_contains(line, '...')
-            if synctime_found && fixed && eye_open
+            if synctime_found && eye_open && (fixed || leave_in_saccades)
                 cell_array{end+1, 1} = cell2mat(textscan(line, '%f', 6))';
             end
         end
