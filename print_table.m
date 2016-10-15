@@ -25,5 +25,6 @@ function print_table(data)
     t.BackgroundColor(:, 2) = (-119/255) * data.desirable + 1;
     t.ColumnWidth = {80, 120, 90, 150, 120, 120, 120, 120};
     t.Position = [0, 0, 960, 600];
+    f.Position = [0, 0, 960, 600];
     t.RowName = [];
 end
