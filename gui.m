@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 01-Oct-2016 18:18:26
+% Last Modified by GUIDE v2.5 15-Oct-2016 21:12:44
 
 % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -66,10 +66,7 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
     
     % Make everything below invisible so the user can't press anything
     % before data has been loaded
-    set(handles.button_table,                     'Visible', 'off');
-    set(handles.uipanel1,                         'Visible', 'off');
-    set(handles.uibuttongroup1,                   'Visible', 'off');
-    set(handles.uibuttongroup2,                   'Visible', 'off');
+    set(handles.panel_data, 'Visible', 'off');
     
     imshow('logo.png');
 end
@@ -123,6 +120,40 @@ function trial_num_edit_CreateFcn(hObject, eventdata, handles)
     end
 end
 
+function edit_scatter_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+    set(hObject, 'Enable', 'off');
+end
+
+function edit_ellipse_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+    set(hObject, 'Enable', 'off');
+end
+
+function edit_bcea_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject, 'Enable', 'off');
+end
+
+function edit_pa_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject, 'Enable', 'off');
+end
+
 % ----- Callback functions ----- %
 
 function em_filename_edit_Callback(hObject, eventdata, handles)
@@ -164,11 +195,16 @@ function button_browse_background_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
 end
 
-function button_read_data_Callback(hObject, eventdata, handles)    
+function button_read_data_Callback(hObject, eventdata, handles)
+    leave_in_saccades = (get(handles.checkbox_saccades, 'Value') ==...
+                         get(handles.checkbox_saccades, 'Max'));
+
     screen_res = [1600, 1200];
+    
     handles.all_data = read_data(handles.em_filename,...
                                  handles.ps_filename,...
-                                 screen_res);
+                                 screen_res,...
+                                 leave_in_saccades);
     
     % Save selected data as well (4 reverses and 2 controls)
     handles.desirable_data = handles.all_data.desirable_data();
@@ -190,13 +226,10 @@ function button_read_data_Callback(hObject, eventdata, handles)
     % Show meta data
     str = meta_str(handles.all_data.meta);
     str(1) = upper(str(1));
-    set(handles.text_meta, 'String', str);
+    set(handles.panel_data, 'Title', str);
     
     % Make everything below visible now data is loaded
-    set(handles.button_table,   'Visible', 'on');
-    set(handles.uipanel1,       'Visible', 'on');
-    set(handles.uibuttongroup1, 'Visible', 'on');
-    set(handles.uibuttongroup2, 'Visible', 'on');
+    set(handles.panel_data, 'Visible', 'on');
     
     % Finally, load a copy of the all_data variable into the workspace
     assignin('base', 'data', handles.all_data.copy);
@@ -204,6 +237,17 @@ end
 
 function button_table_Callback(hObject, eventdata, handles)
     print_table(handles.all_data);
+end
+
+function button_logmar_bcea_Callback(hObject, eventdata, handles)
+    if get(handles.radio_all_data, 'Value') ==...
+       get(handles.radio_all_data, 'Max')
+        d = handles.all_data;
+    else
+        d = handles.desirable_data;
+    end
+    
+    plot_logmar_bcea(d);
 end
 
 function start_limit_edit_Callback(hObject, eventdata, handles)
@@ -258,39 +302,10 @@ function checkbox_relevant_trials_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
 end
 
-function button_scatter_Callback(hObject, eventdata, handles)
-    add_as_series = (get(handles.checkbox_scatter_add, 'Value') ==...
-                     get(handles.checkbox_scatter_add, 'Max'));
+function button_em_table_Callback(hObject, eventdata, handles)
     for i = 1:length(handles.trial_nums)
         index = handles.all_data.index_for_trial(handles.trial_nums(i));
-        plot_scatter(handles.all_data.em_data{index}.copy(),...
-                     add_as_series);
-    end
-end
-
-% Generate scatter with relevant background
-function button_background_Callback(hObject, eventdata, handles)
-    for i = 1:length(handles.trial_nums)
-        trial_num = handles.trial_nums(i);
-                    
-        filename = bmp_filename(handles.all_data,...
-                                trial_num,...
-                                handles.background_dir);
-
-        choose_image = (get(handles.checkbox_choose_image, 'Value') ==...
-                        get(handles.checkbox_choose_image, 'Max'));
-        if choose_image
-            title_str = sprintf('Select background image for trial %d',...
-                                trial_num);
-            [a, b] = uigetfile('*.BMP', title_str);
-            if a == 0; continue; end;
-            filename = [b, a];
-        end
-        
-        index = handles.all_data.index_for_trial(trial_num);
-        em_data = handles.all_data.em_data{index}.copy();
-        
-        plot_background(em_data, filename);
+        print_em_table(handles.all_data.em_data{index}.copy());
     end
 end
 
@@ -325,25 +340,138 @@ function button_gif_Callback(hObject, eventdata, handles)
     end
 end
 
-function button_bcea_progression_Callback(hObject, eventdata, handles)
-    add_as_series = (get(handles.checkbox_progression_add, 'Value') ==...
-                     get(handles.checkbox_progression_add, 'Max'));
+% Generate scatter with relevant background
+function button_background_Callback(hObject, eventdata, handles)
     for i = 1:length(handles.trial_nums)
-        index = handles.all_data.index_for_trial(handles.trial_nums(i));
-        plot_bcea_progression(handles.all_data.em_data{index}.copy(),...
-                              add_as_series);
+        trial_num = handles.trial_nums(i);
+                    
+        filename = bmp_filename(handles.all_data,...
+                                trial_num,...
+                                handles.background_dir);
+
+        choose_image = (get(handles.checkbox_choose_image, 'Value') ==...
+                        get(handles.checkbox_choose_image, 'Max'));
+        if choose_image
+            title_str = sprintf('Select background image for trial %d',...
+                                trial_num);
+            [a, b] = uigetfile('*.BMP', title_str);
+            if a == 0; continue; end;
+            filename = [b, a];
+        end
+        
+        index = handles.all_data.index_for_trial(trial_num);
+        em_data = handles.all_data.em_data{index}.copy();
+        
+        xoffset = str2double(get(handles.edit_xoffset, 'String'));
+        yoffset = str2double(get(handles.edit_yoffset, 'String'));
+        
+        em_data.xpix = em_data.xpix + xoffset;
+        em_data.ypix = em_data.ypix + yoffset;
+        
+        plot_background(em_data, filename);
     end
 end
 
-function button_logmar_bcea_Callback(hObject, eventdata, handles)
-    if get(handles.radio_all_data, 'Value') ==...
-       get(handles.radio_all_data, 'Max')
-        d = handles.all_data;
-    else
-        d = handles.desirable_data;
-    end
+function button_scatter_Callback(hObject, eventdata, handles)
+    specific_figure = (get(handles.radio_scatter_figure, 'Value') ==...
+                       get(handles.radio_scatter_figure, 'Max'));
     
-    plot_logmar_bcea(d);
+    for i = 1:length(handles.trial_nums)
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        em_data = handles.all_data.em_data{index}.copy();
+        
+        if specific_figure
+            figure = str2num(get(handles.edit_scatter_figure, 'String'));
+            plot_scatter(em_data, 1, figure);
+        else
+            plot_scatter(em_data, 0);
+        end
+    end
+end
+
+function button_ellipse_Callback(hObject, eventdata, handles)
+    specific_figure = (get(handles.radio_ellipse_figure, 'Value') ==...
+                       get(handles.radio_ellipse_figure, 'Max'));
+                   
+    k = str2double(get(handles.edit_scatter_k, 'String'));
+
+    for i = 1:length(handles.trial_nums)
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        em_data = handles.all_data.em_data{index}.copy();
+        
+        if specific_figure
+            figure = str2num(get(handles.edit_ellipse_figure, 'String'));
+            plot_ellipse(em_data, k, 1, figure);
+        else
+            plot_ellipse(em_data, k, 0);
+        end
+    end
+end
+
+function button_bcea_progression_Callback(hObject, eventdata, handles)
+    specific_figure = (get(handles.radio_bcea_figure, 'Value') ==...
+                       get(handles.radio_bcea_figure, 'Max'));
+                   
+    for i = 1:length(handles.trial_nums)
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        em_data = handles.all_data.em_data{index}.copy();
+        
+        if specific_figure
+            figure = str2num(get(handles.edit_bcea_figure, 'String'));
+            plot_bcea_progression(em_data, 1, figure);
+        else
+            plot_bcea_progression(em_data, 0);
+        end
+    end
+end
+
+function button_pupil_area_Callback(hObject, eventdata, handles)
+    specific_figure = (get(handles.radio_pa_figure, 'Value') ==...
+                       get(handles.radio_pa_figure, 'Max'));
+                   
+    for i = 1:length(handles.trial_nums)
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        em_data = handles.all_data.em_data{index}.copy();
+        
+        if specific_figure
+            figure = str2num(get(handles.edit_pa_figure, 'String'));
+            plot_pupil_area(em_data, 1, figure);
+        else
+            plot_pupil_area(em_data, 0);
+        end
+    end
+end
+
+function radio_ellipse_figure_Callback(hObject, eventdata, handles)
+    set(handles.edit_ellipse_figure, 'Enable', 'on');
+end
+
+function radio_scatter_figure_Callback(hObject, eventdata, handles)
+    set(handles.edit_scatter_figure, 'Enable', 'on');
+end
+
+function radio_ellipse_new_Callback(hObject, eventdata, handles)
+    set(handles.edit_ellipse_figure, 'Enable', 'off');
+end
+
+function radio_scatter_new_Callback(hObject, eventdata, handles)
+    set(handles.edit_scatter_figure, 'Enable', 'off');
+end
+
+function radio_pa_figure_Callback(hObject, eventdata, handles)
+    set(handles.edit_pa_figure, 'Enable', 'on');
+end
+
+function radio_pa_new_Callback(hObject, eventdata, handles)
+    set(handles.edit_pa_figure, 'Enable', 'off');
+end
+
+function radio_bcea_new_Callback(hObject, eventdata, handles)
+    set(handles.edit_bcea_figure, 'Enable', 'off');
+end
+
+function radio_bcea_figure_Callback(hObject, eventdata, handles)
+    set(handles.edit_bcea_figure, 'Enable', 'on');
 end
 
 % ----- Other helper functions ----- %
