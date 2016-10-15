@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 12-Oct-2016 12:43:16
+% Last Modified by GUIDE v2.5 15-Oct-2016 20:36:05
 
 % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -200,6 +200,17 @@ function button_table_Callback(hObject, eventdata, handles)
     print_table(handles.all_data);
 end
 
+function button_logmar_bcea_Callback(hObject, eventdata, handles)
+    if get(handles.radio_all_data, 'Value') ==...
+       get(handles.radio_all_data, 'Max')
+        d = handles.all_data;
+    else
+        d = handles.desirable_data;
+    end
+    
+    plot_logmar_bcea(d);
+end
+
 function start_limit_edit_Callback(hObject, eventdata, handles)
     handles.start_limit = str2num(get(hObject, 'String'));
     guidata(hObject, handles);
@@ -252,43 +263,41 @@ function checkbox_relevant_trials_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
 end
 
-function button_scatter_Callback(hObject, eventdata, handles)
-    add_as_series = (get(handles.radio_scatter_same, 'Value') ==...
-                     get(handles.radio_scatter_same, 'Max'));
-    specific_figure = (get(handles.radio_scatter_figure, 'Value') ==...
-                       get(handles.radio_scatter_figure, 'Max'));
-    
+function button_em_table_Callback(hObject, eventdata, handles)
     for i = 1:length(handles.trial_nums)
         index = handles.all_data.index_for_trial(handles.trial_nums(i));
-        em_data = handles.all_data.em_data{index}.copy();
-        
-        if specific_figure
-            figure = str2num(get(handles.edit_scatter_figure, 'String'));
-            plot_scatter(em_data, 1, figure);
-        else
-            plot_scatter(em_data, add_as_series);
-        end
+        print_em_table(handles.all_data.em_data{index}.copy());
     end
 end
 
-function button_ellipse_Callback(hObject, eventdata, handles)
-    add_as_series = (get(handles.radio_ellipse_same, 'Value') ==...
-                     get(handles.radio_ellipse_same, 'Max'));
-    specific_figure = (get(handles.radio_ellipse_figure, 'Value') ==...
-                       get(handles.radio_ellipse_figure, 'Max'));
-                   
-    k = str2double(get(handles.edit_scatter_k, 'String'));
-
+function button_xy_Callback(hObject, eventdata, handles)
     for i = 1:length(handles.trial_nums)
         index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        plot_xy(handles.all_data.em_data{index}.copy());
+    end
+end
+
+function button_hist_Callback(hObject, eventdata, handles)
+    for i = 1:length(handles.trial_nums)
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        plot_hist(handles.all_data.em_data{index}.copy());
+    end
+end
+
+function button_gif_Callback(hObject, eventdata, handles)
+    for i = 1:length(handles.trial_nums)
+        trial_num = handles.trial_nums(i);
+        
+        index = handles.all_data.index_for_trial(trial_num);
         em_data = handles.all_data.em_data{index}.copy();
         
-        if specific_figure
-            figure = str2num(get(handles.edit_ellipse_figure, 'String'));
-            plot_ellipse(em_data, k, 1, figure);
-        else
-            plot_ellipse(em_data, k, add_as_series);
-        end
+        [a, b] = uiputfile('*.gif',...
+                           ['Save .gif for trial ',...
+                            num2str(em_data.trial_num), ' as...']);
+        if a == 0; continue; end;
+        filename = [b, a];
+        
+        print_gif(em_data, filename);
     end
 end
 
@@ -324,65 +333,74 @@ function button_background_Callback(hObject, eventdata, handles)
     end
 end
 
-function button_xy_Callback(hObject, eventdata, handles)
+function button_scatter_Callback(hObject, eventdata, handles)
+    specific_figure = (get(handles.radio_scatter_figure, 'Value') ==...
+                       get(handles.radio_scatter_figure, 'Max'));
+    
     for i = 1:length(handles.trial_nums)
         index = handles.all_data.index_for_trial(handles.trial_nums(i));
-        plot_xy(handles.all_data.em_data{index}.copy());
-    end
-end
-
-function button_hist_Callback(hObject, eventdata, handles)
-    for i = 1:length(handles.trial_nums)
-        index = handles.all_data.index_for_trial(handles.trial_nums(i));
-        plot_hist(handles.all_data.em_data{index}.copy());
-    end
-end
-
-function button_gif_Callback(hObject, eventdata, handles)
-    for i = 1:length(handles.trial_nums)
-        trial_num = handles.trial_nums(i);
-        
-        index = handles.all_data.index_for_trial(trial_num);
         em_data = handles.all_data.em_data{index}.copy();
         
-        [a, b] = uiputfile('*.gif',...
-                           ['Save .gif for trial ',...
-                            num2str(em_data.trial_num), ' as...']);
-        if a == 0; continue; end;
-        filename = [b, a];
+        if specific_figure
+            figure = str2num(get(handles.edit_scatter_figure, 'String'));
+            plot_scatter(em_data, 1, figure);
+        else
+            plot_scatter(em_data, 0);
+        end
+    end
+end
+
+function button_ellipse_Callback(hObject, eventdata, handles)
+    specific_figure = (get(handles.radio_ellipse_figure, 'Value') ==...
+                       get(handles.radio_ellipse_figure, 'Max'));
+                   
+    k = str2double(get(handles.edit_scatter_k, 'String'));
+
+    for i = 1:length(handles.trial_nums)
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        em_data = handles.all_data.em_data{index}.copy();
         
-        print_gif(em_data, filename);
+        if specific_figure
+            figure = str2num(get(handles.edit_ellipse_figure, 'String'));
+            plot_ellipse(em_data, k, 1, figure);
+        else
+            plot_ellipse(em_data, k, 0);
+        end
     end
 end
 
 function button_bcea_progression_Callback(hObject, eventdata, handles)
-    add_as_series = (get(handles.checkbox_progression_add, 'Value') ==...
-                     get(handles.checkbox_progression_add, 'Max'));
+    specific_figure = (get(handles.radio_bcea_figure, 'Value') ==...
+                       get(handles.radio_bcea_figure, 'Max'));
+                   
     for i = 1:length(handles.trial_nums)
         index = handles.all_data.index_for_trial(handles.trial_nums(i));
-        plot_bcea_progression(handles.all_data.em_data{index}.copy(),...
-                              add_as_series);
+        em_data = handles.all_data.em_data{index}.copy();
+        
+        if specific_figure
+            figure = str2num(get(handles.edit_bcea_figure, 'String'));
+            plot_bcea_progression(em_data, 1, figure);
+        else
+            plot_bcea_progression(em_data, 0);
+        end
     end
-end
-
-function button_logmar_bcea_Callback(hObject, eventdata, handles)
-    if get(handles.radio_all_data, 'Value') ==...
-       get(handles.radio_all_data, 'Max')
-        d = handles.all_data;
-    else
-        d = handles.desirable_data;
-    end
-    
-    plot_logmar_bcea(d);
-end
-
-function button_em_table_Callback(hObject, eventdata, handles)
 end
 
 function button_pupil_area_Callback(hObject, eventdata, handles)
-end
-
-function edit_scatter_figure_Callback(hObject, eventdata, handles)
+    specific_figure = (get(handles.radio_pa_figure, 'Value') ==...
+                       get(handles.radio_pa_figure, 'Max'));
+                   
+    for i = 1:length(handles.trial_nums)
+        index = handles.all_data.index_for_trial(handles.trial_nums(i));
+        em_data = handles.all_data.em_data{index}.copy();
+        
+        if specific_figure
+            figure = str2num(get(handles.edit_pa_figure, 'String'));
+            plot_pupil_area(em_data, 1, figure);
+        else
+            plot_pupil_area(em_data, 0);
+        end
+    end
 end
 
 function edit_scatter_figure_CreateFcn(hObject, eventdata, handles)
@@ -394,15 +412,28 @@ function edit_scatter_figure_CreateFcn(hObject, eventdata, handles)
     set(hObject, 'Enable', 'off');
 end
 
-function edit_ellipse_figure_Callback(hObject, eventdata, handles)
-end
-
 function edit_ellipse_figure_CreateFcn(hObject, eventdata, handles)
     if ispc && isequal(get(hObject,'BackgroundColor'),...
                        get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
     
+    set(hObject, 'Enable', 'off');
+end
+
+function edit_bcea_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject, 'Enable', 'off');
+end
+
+function edit_pa_figure_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'),...
+                       get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
     set(hObject, 'Enable', 'off');
 end
 
@@ -414,20 +445,28 @@ function radio_scatter_figure_Callback(hObject, eventdata, handles)
     set(handles.edit_scatter_figure, 'Enable', 'on');
 end
 
-function radio_ellipse_same_Callback(hObject, eventdata, handles)
-    set(handles.edit_ellipse_figure, 'Enable', 'off');
-end
-
 function radio_ellipse_new_Callback(hObject, eventdata, handles)
     set(handles.edit_ellipse_figure, 'Enable', 'off');
 end
 
-function radio_scatter_same_Callback(hObject, eventdata, handles)
+function radio_scatter_new_Callback(hObject, eventdata, handles)
     set(handles.edit_scatter_figure, 'Enable', 'off');
 end
 
-function radio_scatter_new_Callback(hObject, eventdata, handles)
-        set(handles.edit_scatter_figure, 'Enable', 'off');
+function radio_pa_figure_Callback(hObject, eventdata, handles)
+    set(handles.edit_pa_figure, 'Enable', 'on');
+end
+
+function radio_pa_new_Callback(hObject, eventdata, handles)
+    set(handles.edit_pa_figure, 'Enable', 'off');
+end
+
+function radio_bcea_new_Callback(hObject, eventdata, handles)
+    set(handles.edit_bcea_figure, 'Enable', 'off');
+end
+
+function radio_bcea_figure_Callback(hObject, eventdata, handles)
+    set(handles.edit_bcea_figure, 'Enable', 'on');
 end
 
 % ----- Other helper functions ----- %
@@ -436,4 +475,3 @@ function trial_nums = read_from_trial_num_edit(handles)
     c = textscan(get(handles.trial_num_edit, 'String'), '%d');
     trial_nums = c{1};
 end
-
