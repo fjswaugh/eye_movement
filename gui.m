@@ -196,6 +196,12 @@ function button_browse_background_Callback(hObject, eventdata, handles)
 end
 
 function button_read_data_Callback(hObject, eventdata, handles)
+    % Make everything below invisible until data is loaded
+    set(handles.panel_data, 'Visible', 'off');
+    set(hObject, 'Enable', 'off');
+    set(handles.checkbox_saccades, 'Enable', 'off');
+    pause(0.01);  % Give time for panel_data to become invisible
+    
     leave_in_saccades = (get(handles.checkbox_saccades, 'Value') ==...
                          get(handles.checkbox_saccades, 'Max'));
 
@@ -230,6 +236,8 @@ function button_read_data_Callback(hObject, eventdata, handles)
     
     % Make everything below visible now data is loaded
     set(handles.panel_data, 'Visible', 'on');
+    set(hObject, 'Enable', 'on');
+    set(handles.checkbox_saccades, 'Enable', 'on');
     
     % Finally, load a copy of the all_data variable into the workspace
     assignin('base', 'data', handles.all_data.copy);
