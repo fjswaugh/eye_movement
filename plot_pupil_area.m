@@ -17,5 +17,5 @@ function plot_pupil_area(em_data, add_as_series, figure_num)
     
     title('Pupil area over specified time');
     xlabel('Time (ms)');
-    ylabel('BCEA');
+    ylabel('Pupil area');
 end
