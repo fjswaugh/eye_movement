@@ -1,0 +1,585 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>demo</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-09"><meta name="DC.source" content="demo.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Preliminaries</a></li><li><a href="#2">View how the data is structured</a></li><li><a href="#8">Eye movement data</a></li><li><a href="#16">Meta data</a></li><li><a href="#17">How to plot graphs with the data</a></li><li><a href="#23">Using the GUI</a></li></ul></div><h2>Preliminaries<a name="1"></a></h2><pre class="codeinput"><span class="comment">% We must first load the data into memory for one particular run.</span>
+<span class="comment">% So we must select the filenames for the data:</span>
+em_filename = <span class="string">'eye_movement.asc'</span>;
+ps_filename = <span class="string">'psychophysics.txt'</span>;
+
+<span class="comment">% Enter the screen resolution</span>
+screen_res = [1600, 1200];
+
+<span class="comment">% And read in the data</span>
+data = read_data(em_filename, ps_filename, screen_res);
+</pre><h2>View how the data is structured<a name="2"></a></h2><pre class="codeinput"><span class="comment">% The data is stored in an object we have named 'data'.</span>
+data
+</pre><pre class="codeoutput">
+data = 
+
+  26 Data array with properties:
+
+     trial_num: [26x1 double]
+        logmar: [26x1 double]
+          type: [26x1 double]
+     desirable: [26x1 double]
+    image_char: [26x1 char]
+       em_data: {26x1 cell}
+          meta: [1x1 struct]
+
+</pre><pre class="codeinput"><span class="comment">% You can access any part of the data with the 'dot' syntax, e.g.</span>
+data.logmar
+</pre><pre class="codeoutput">
+ans =
+
+    0.8104
+    0.8104
+    0.7203
+    0.7203
+    0.6063
+    0.8104
+    0.6063
+    0.5094
+    0.5094
+    0.3845
+    0.3845
+    0.8104
+    0.3053
+    0.3053
+    0.2084
+    0.2084
+    0.0834
+...</pre><pre class="codeinput"><span class="comment">% Each data point has associated with it a:</span>
+<span class="comment">%  - trial number</span>
+<span class="comment">%  - logmar</span>
+<span class="comment">%  - type (is the trial a reversal, catch, etc.)</span>
+<span class="comment">%  - desirable boolean (is the trial one of the six interesting ones)</span>
+<span class="comment">%  - image_char (the letter that was being identified)</span>
+<span class="comment">%  - em_data (an object containing fixed eye movement data for the trial)</span>
+
+<span class="comment">% To access any datum for one particular trial, the index for that trial</span>
+<span class="comment">% must be found. Say we are interested in trial 5. We must find the index</span>
+<span class="comment">% at which trial 5 is stored (this will more than likely, but not</span>
+<span class="comment">% necessarily, also have a value of 5).</span>
+index = data.index_for_trial(5)
+</pre><pre class="codeoutput">
+index =
+
+     5
+
+</pre><pre class="codeinput"><span class="comment">% From here, we could examine, say, the 'type' of trial 5. 'data.type' is</span>
+<span class="comment">% an array, and so any value can be accessed with the bracket notation:</span>
+data.type(index)
+</pre><pre class="codeoutput">
+ans =
+
+    -1
+
+</pre><pre class="codeinput"><span class="comment">% Although this does represent the 'type' of trial 5, it isn't particularly</span>
+<span class="comment">% helpful. Luckily there's a function to translate this number to a string.</span>
+<span class="comment">% The result of will be one of six possibilities:</span>
+<span class="comment">%  - 'Correct catch'</span>
+<span class="comment">%  - 'Correct reversal'</span>
+<span class="comment">%  - 'Correct'</span>
+<span class="comment">%  - 'Incorrect'</span>
+<span class="comment">%  - 'Incorrect reversal'</span>
+<span class="comment">%  - 'Incorrect catch' (an unusual result, given the size of catch trials)</span>
+type_str(data.type(index))
+</pre><pre class="codeoutput">
+ans =
+
+Correct
+
+</pre><pre class="codeinput"><span class="comment">% Before moving on to eye movement data, this is how to select the six</span>
+<span class="comment">% particularly desirable data points from all of the data. Notice that this</span>
+<span class="comment">% has made a copy of 'data', but removed all but six points. It can be</span>
+<span class="comment">% handled in exactly the same way as the previous 'data' variable.</span>
+desirable_data = data.desirable_data()
+</pre><pre class="codeoutput">
+desirable_data = 
+
+  6 Data array with properties:
+
+     trial_num: [6x1 double]
+        logmar: [6x1 double]
+          type: [6x1 double]
+     desirable: [6x1 double]
+    image_char: [6x1 char]
+       em_data: {6x1 cell}
+          meta: [1x1 struct]
+
+</pre><h2>Eye movement data<a name="8"></a></h2><pre class="codeinput"><span class="comment">% Let's look at trial 5 again, this time picking out the eye movement data</span>
+<span class="comment">% associated with it. I'll save this in a new variable, to avoid excessive</span>
+<span class="comment">% typing.</span>
+<span class="comment">%</span>
+<span class="comment">% There are two things to notice here:</span>
+<span class="comment">%   1. Once we know the index for trial 5, we must use the {} notation to</span>
+<span class="comment">%      pick out an eye movement data point. This is because em_data is</span>
+<span class="comment">%      stored in a cell array, rather than a normal array.</span>
+<span class="comment">%   2. Because EyeMovementData is a handle class, if we wish to make a copy</span>
+<span class="comment">%      we must use the em_data.copy() method as shown below. If we didn't</span>
+<span class="comment">%      use the copy() method, then we would only be creating a reference,</span>
+<span class="comment">%      or handle, to the data.</span>
+index = data.index_for_trial(5);
+em_data = data.em_data{index}.copy()
+</pre><pre class="codeoutput">
+em_data = 
+
+  994 EyeMovementData array with properties:
+
+     trial_num: 5
+          time: [994x1 double]
+          xpix: [994x1 double]
+          ypix: [994x1 double]
+          xdeg: [994x1 double]
+          ydeg: [994x1 double]
+    pupil_area: [994x1 double]
+
+</pre><pre class="codeinput"><span class="comment">% Any part of this em_data can also be accessed with 'dot' syntax, e.g.</span>
+em_data.trial_num
+</pre><pre class="codeoutput">
+ans =
+
+     5
+
+</pre><pre class="codeinput"><span class="comment">% Now we could, say, calculate the BCEA for this trial</span>
+<span class="comment">% The bcea function takes arguments in the form bcea(x data, y data, k)</span>
+bcea(em_data.xdeg, em_data.ydeg, 3)
+</pre><pre class="codeoutput">
+ans =
+
+    0.1063
+
+</pre><pre class="codeinput"><span class="comment">% Perhaps now though we want to look only at a certain time period in the</span>
+<span class="comment">% data, for example for time 101ms -&gt; 300ms</span>
+em_data.set_limits(101, 300);
+
+<span class="comment">% Now the eye movement data is different, with only 200 data points)</span>
+em_data
+</pre><pre class="codeoutput">
+em_data = 
+
+  994 EyeMovementData array with properties:
+
+     trial_num: 5
+          time: [200x1 double]
+          xpix: [200x1 double]
+          ypix: [200x1 double]
+          xdeg: [200x1 double]
+          ydeg: [200x1 double]
+    pupil_area: [200x1 double]
+
+</pre><pre class="codeinput"><span class="comment">% The bcea is also different:</span>
+bcea(em_data.xdeg, em_data.ydeg, 3)
+</pre><pre class="codeoutput">
+ans =
+
+    0.0525
+
+</pre><pre class="codeinput"><span class="comment">% Note that the extra data points for time not equal to 101-&gt;300ms are</span>
+<span class="comment">% still saved. The size() method will give the original size of the data...</span>
+em_data.size()
+</pre><pre class="codeoutput">
+ans =
+
+   994
+
+</pre><pre class="codeinput"><span class="comment">% ...and the limits can be easily removed to look at the whole time period</span>
+<span class="comment">% again.</span>
+em_data.remove_limits();
+</pre><pre class="codeinput"><span class="comment">% There are also functions to calculate Pearson's cofficient, standard</span>
+<span class="comment">% deviations of x and y, and a function that returns an array showing how</span>
+<span class="comment">% the BCEA value progresses over time.</span>
+pearsons_coefficient       = pearson(em_data.xdeg, em_data.ydeg);
+standard_deviation_of_xdeg = std(em_data.xdeg);
+array_of_bcea_progression  = bcea_progression(em_data.xdeg, em_data.ydeg, 3);
+</pre><h2>Meta data<a name="16"></a></h2><pre class="codeinput"><span class="comment">% Going back to the object containing all the data from this file, there is</span>
+<span class="comment">% another field as yet unexplained - data.meta. It contains info extracted</span>
+<span class="comment">% from the psychophysics file and uniquely identifies the experimental run.</span>
+data.meta
+</pre><pre class="codeoutput">
+ans = 
+
+        flank: 'Similar'
+        color: 'Red'
+    luminance: -0.3000
+
+</pre><h2>How to plot graphs with the data<a name="17"></a></h2><pre class="codeinput"><span class="comment">% First things first, let's print a table of all the data</span>
+print_table(data);
+set(gcf, <span class="string">'Position'</span>, [0 0 920 660]);  <span class="comment">% Expand window containing the table</span>
+</pre><img vspace="5" hspace="5" src="demo_01.png" alt=""> <pre class="codeinput"><span class="comment">% There are two ways to plot graphs. Using the pre-made functions, or</span>
+<span class="comment">% plotting something manually.</span>
+
+<span class="comment">% The pre-made functions are:</span>
+<span class="comment">%  - plot_xy(em_data)</span>
+<span class="comment">%  - plot_hist(em_data)</span>
+<span class="comment">%  - plot_scatter(em_data, add_as_series)</span>
+<span class="comment">%  - plot_bcea_progression(em_data, add_as_series)</span>
+<span class="comment">%  - plot_background(em_data, background_filename)</span>
+<span class="comment">%  - print_gif(em_data, filename)</span>
+<span class="comment">%  - plot_logmar_bcea(data)</span>
+
+<span class="comment">% Descriptions for all of these are included as comments at the start of</span>
+<span class="comment">% the function and should therefore be available to view in Matlab help.</span>
+</pre><pre class="codeinput"><span class="comment">% Let's look at plot_scatter() as an example. It takes two arguments, the</span>
+<span class="comment">% first being an object containing some eye movement data (em_data), and</span>
+<span class="comment">% the second being a boolean 'add_as_series' that asks whether to add this</span>
+<span class="comment">% eye movement data as a series on top of a previous plot (if a previous</span>
+<span class="comment">% plot exists).</span>
+
+<span class="comment">% Usage might be as follows (for example's sake, we are examining eye</span>
+<span class="comment">% movement data for trial 3):</span>
+index = data.index_for_trial(3);
+plot_scatter(data.em_data{index}.copy(), false);
+
+<span class="comment">% Now, assuming we wish to examine the eye movement scatter for trial 4 on</span>
+<span class="comment">% the same graph, we could write:</span>
+index = data.index_for_trial(4);
+plot_scatter(data.em_data{index}.copy(), true);
+</pre><img vspace="5" hspace="5" src="demo_02.png" alt=""> <pre class="codeinput"><span class="comment">% The plot_scatter() function should produce a sensible plot with labelled</span>
+<span class="comment">% axes, but if something different is desired then plotting manually might</span>
+<span class="comment">% be sensible (or indeed you could edit the function itself if you wished).</span>
+
+<span class="comment">% To give an example, let's plot something for which there is (currently)</span>
+<span class="comment">% no function. Perhaps the pupil size data over time for trial 6. We will</span>
+<span class="comment">% use the standard Matlab function plot().</span>
+index = data.index_for_trial(6);
+em_data = data.em_data{index}.copy();
+plot(em_data.time, em_data.pupil_area, <span class="string">'.'</span>);
+xlabel(<span class="string">'time (ms)'</span>);
+ylabel(<span class="string">'pupil area'</span>);
+title(<span class="string">'Pupil area for trial 6 over time'</span>);
+</pre><img vspace="5" hspace="5" src="demo_03.png" alt=""> <pre class="codeinput"><span class="comment">% Perhaps we wish to combine this pupil area data with position data. We</span>
+<span class="comment">% could plot a scatter where the size of the points is related (not</span>
+<span class="comment">% proportionally though) to the area of the pupil.</span>
+scatter(em_data.xdeg, em_data.ydeg,<span class="keyword">...</span>
+        (em_data.pupil_area/1000).^7, <span class="string">'filled'</span>);
+xlabel(<span class="string">'x (deg)'</span>);
+ylabel(<span class="string">'y (deg)'</span>);
+title(<span class="string">'Eye fixation scatter with point size related to pupil area'</span>);
+</pre><img vspace="5" hspace="5" src="demo_04.png" alt=""> <pre class="codeinput"><span class="comment">% As a final example, let's draw a scatter graph over a background image of</span>
+<span class="comment">% the actual letter presented to the subject in the experiment.</span>
+
+<span class="comment">% First, we can use a function provided to find the filename of the .BMP</span>
+<span class="comment">% associated with the trial that we wish to examine (say trial 2). We must</span>
+<span class="comment">% include the directory containing all the BMP files for it to search in</span>
+<span class="comment">% (in this case that is '../stick/bmp'. Inside this directory must be all</span>
+<span class="comment">% .BMP files individually, as the function will not look in subdirectories.</span>
+bg_filename = bmp_filename(data, 2, <span class="string">'../stick/bmp'</span>);
+plot_background(data.em_data{data.index_for_trial(2)}, bg_filename);
+</pre><img vspace="5" hspace="5" src="demo_05.png" alt=""> <h2>Using the GUI<a name="23"></a></h2><pre class="codeinput"><span class="comment">% There is a gui program to easily make use of all the built-in functions.</span>
+<span class="comment">% Launch it by typing 'gui'</span>
+
+<span class="comment">% The gui contains file dialogs to select the correct data files (and, if</span>
+<span class="comment">% you wish, the location of the background .BMP files).</span>
+<span class="comment">%</span>
+<span class="comment">% There is then a button labelled 'Read data from files'. This will load</span>
+<span class="comment">% everything into memory, making the additional functions on the gui</span>
+<span class="comment">% appear.</span>
+<span class="comment">%</span>
+<span class="comment">% It will also load a copy of the data into the Matlab workspace as a</span>
+<span class="comment">% variable called 'data'. Therefore, the gui can be a convenient way to</span>
+<span class="comment">% load in data from files, even if the rest of its functionality is</span>
+<span class="comment">% undesired.</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Preliminaries
+
+% We must first load the data into memory for one particular run.
+% So we must select the filenames for the data:
+em_filename = 'eye_movement.asc';
+ps_filename = 'psychophysics.txt';
+
+% Enter the screen resolution
+screen_res = [1600, 1200];
+
+% And read in the data
+data = read_data(em_filename, ps_filename, screen_res);
+
+%% View how the data is structured
+
+% The data is stored in an object we have named 'data'.
+data
+
+%%
+
+% You can access any part of the data with the 'dot' syntax, e.g.
+data.logmar
+
+%%
+
+% Each data point has associated with it a:
+%  - trial number
+%  - logmar
+%  - type (is the trial a reversal, catch, etc.)
+%  - desirable boolean (is the trial one of the six interesting ones)
+%  - image_char (the letter that was being identified)
+%  - em_data (an object containing fixed eye movement data for the trial)
+
+% To access any datum for one particular trial, the index for that trial
+% must be found. Say we are interested in trial 5. We must find the index
+% at which trial 5 is stored (this will more than likely, but not
+% necessarily, also have a value of 5).
+index = data.index_for_trial(5)
+
+%%
+
+% From here, we could examine, say, the 'type' of trial 5. 'data.type' is
+% an array, and so any value can be accessed with the bracket notation:
+data.type(index)
+
+%%
+
+% Although this does represent the 'type' of trial 5, it isn't particularly
+% helpful. Luckily there's a function to translate this number to a string.
+% The result of will be one of six possibilities:
+%  - 'Correct catch'
+%  - 'Correct reversal'
+%  - 'Correct'
+%  - 'Incorrect'
+%  - 'Incorrect reversal'
+%  - 'Incorrect catch' (an unusual result, given the size of catch trials)
+type_str(data.type(index))
+
+%%
+
+% Before moving on to eye movement data, this is how to select the six
+% particularly desirable data points from all of the data. Notice that this
+% has made a copy of 'data', but removed all but six points. It can be
+% handled in exactly the same way as the previous 'data' variable.
+desirable_data = data.desirable_data()
+
+%% Eye movement data
+
+% Let's look at trial 5 again, this time picking out the eye movement data
+% associated with it. I'll save this in a new variable, to avoid excessive
+% typing.
+%
+% There are two things to notice here:
+%   1. Once we know the index for trial 5, we must use the {} notation to
+%      pick out an eye movement data point. This is because em_data is
+%      stored in a cell array, rather than a normal array.
+%   2. Because EyeMovementData is a handle class, if we wish to make a copy
+%      we must use the em_data.copy() method as shown below. If we didn't
+%      use the copy() method, then we would only be creating a reference,
+%      or handle, to the data.
+index = data.index_for_trial(5);
+em_data = data.em_data{index}.copy()
+
+%%
+
+% Any part of this em_data can also be accessed with 'dot' syntax, e.g.
+em_data.trial_num
+
+%%
+
+% Now we could, say, calculate the BCEA for this trial
+% The bcea function takes arguments in the form bcea(x data, y data, k)
+bcea(em_data.xdeg, em_data.ydeg, 3)
+
+%%
+
+% Perhaps now though we want to look only at a certain time period in the
+% data, for example for time 101ms -> 300ms
+em_data.set_limits(101, 300);
+
+% Now the eye movement data is different, with only 200 data points)
+em_data
+
+%%
+
+% The bcea is also different:
+bcea(em_data.xdeg, em_data.ydeg, 3)
+
+%%
+
+% Note that the extra data points for time not equal to 101->300ms are
+% still saved. The size() method will give the original size of the data...
+em_data.size()
+
+%%
+
+% ...and the limits can be easily removed to look at the whole time period
+% again.
+em_data.remove_limits();
+
+%%
+
+% There are also functions to calculate Pearson's cofficient, standard
+% deviations of x and y, and a function that returns an array showing how
+% the BCEA value progresses over time.
+pearsons_coefficient       = pearson(em_data.xdeg, em_data.ydeg);
+standard_deviation_of_xdeg = std(em_data.xdeg);
+array_of_bcea_progression  = bcea_progression(em_data.xdeg, em_data.ydeg, 3);
+
+%% Meta data
+
+% Going back to the object containing all the data from this file, there is
+% another field as yet unexplained - data.meta. It contains info extracted
+% from the psychophysics file and uniquely identifies the experimental run.
+data.meta
+
+%% How to plot graphs with the data
+
+% First things first, let's print a table of all the data
+print_table(data);
+set(gcf, 'Position', [0 0 920 660]);  % Expand window containing the table
+
+%%
+
+% There are two ways to plot graphs. Using the pre-made functions, or
+% plotting something manually.
+
+% The pre-made functions are:
+%  - plot_xy(em_data)
+%  - plot_hist(em_data)
+%  - plot_scatter(em_data, add_as_series)
+%  - plot_bcea_progression(em_data, add_as_series)
+%  - plot_background(em_data, background_filename)
+%  - print_gif(em_data, filename)
+%  - plot_logmar_bcea(data)
+
+% Descriptions for all of these are included as comments at the start of
+% the function and should therefore be available to view in Matlab help.
+
+%%
+
+% Let's look at plot_scatter() as an example. It takes two arguments, the
+% first being an object containing some eye movement data (em_data), and
+% the second being a boolean 'add_as_series' that asks whether to add this
+% eye movement data as a series on top of a previous plot (if a previous
+% plot exists).
+
+% Usage might be as follows (for example's sake, we are examining eye
+% movement data for trial 3):
+index = data.index_for_trial(3);
+plot_scatter(data.em_data{index}.copy(), false);
+
+% Now, assuming we wish to examine the eye movement scatter for trial 4 on
+% the same graph, we could write:
+index = data.index_for_trial(4);
+plot_scatter(data.em_data{index}.copy(), true);
+
+%%
+
+% The plot_scatter() function should produce a sensible plot with labelled
+% axes, but if something different is desired then plotting manually might
+% be sensible (or indeed you could edit the function itself if you wished).
+
+% To give an example, let's plot something for which there is (currently)
+% no function. Perhaps the pupil size data over time for trial 6. We will
+% use the standard Matlab function plot().
+index = data.index_for_trial(6);
+em_data = data.em_data{index}.copy();
+plot(em_data.time, em_data.pupil_area, '.');
+xlabel('time (ms)');
+ylabel('pupil area');
+title('Pupil area for trial 6 over time');
+
+%%
+
+% Perhaps we wish to combine this pupil area data with position data. We
+% could plot a scatter where the size of the points is related (not
+% proportionally though) to the area of the pupil.
+scatter(em_data.xdeg, em_data.ydeg,...
+        (em_data.pupil_area/1000).^7, 'filled');
+xlabel('x (deg)');
+ylabel('y (deg)');
+title('Eye fixation scatter with point size related to pupil area');
+
+%%
+
+% As a final example, let's draw a scatter graph over a background image of
+% the actual letter presented to the subject in the experiment.
+
+% First, we can use a function provided to find the filename of the .BMP
+% associated with the trial that we wish to examine (say trial 2). We must
+% include the directory containing all the BMP files for it to search in
+% (in this case that is '../stick/bmp'. Inside this directory must be all
+% .BMP files individually, as the function will not look in subdirectories.
+bg_filename = bmp_filename(data, 2, '../stick/bmp');
+plot_background(data.em_data{data.index_for_trial(2)}, bg_filename);
+
+%% Using the GUI
+
+% There is a gui program to easily make use of all the built-in functions.
+% Launch it by typing 'gui'
+
+% The gui contains file dialogs to select the correct data files (and, if
+% you wish, the location of the background .BMP files).
+%
+% There is then a button labelled 'Read data from files'. This will load
+% everything into memory, making the additional functions on the gui
+% appear.
+%
+% It will also load a copy of the data into the Matlab workspace as a
+% variable called 'data'. Therefore, the gui can be a convenient way to
+% load in data from files, even if the rest of its functionality is
+% undesired.
+
+##### SOURCE END #####
+--></body></html>
