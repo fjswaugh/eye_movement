@@ -37,7 +37,7 @@ function plot_logmar_bcea(data)
         count = count + 1;
         
         % Now add label for point, because the legend is broken
-        points_str = sprintf('• %s', type_str(i));
+        points_str = sprintf('+ %s', type_str(i));
         ypos = count * 0.1 + 0.9;
         t = text(.025, ypos*0.5, points_str);
         t.Color = type_color(i);

@@ -24,7 +24,7 @@ function plot_ellipse(em_data, k, add_as_series, figure_num)
     plot(x, y, 'DisplayName',...
          ['Trial ', num2str(em_data.trial_num),...
           ' (k = ', num2str(k), ')']);
-    legend('-DynamicLegend', 2);
+    legend('-DynamicLegend', 'Location', 'NorthWest');
     
     if add_as_series; hold off; end
     

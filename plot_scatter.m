@@ -12,7 +12,7 @@ function figure_num = plot_scatter(em_data, add_as_series, figure_num)
     if add_as_series; hold on; end
     plot(em_data.xdeg, em_data.ydeg, 's',...
          'DisplayName', ['Trial ', num2str(em_data.trial_num)]);
-    legend('-DynamicLegend', 2);
+    legend('-DynamicLegend', 'Location', 'NorthWest');
     if add_as_series; hold off; end
 
     xlabel('x (degrees)');
